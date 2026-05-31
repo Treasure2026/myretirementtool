@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18199163847"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-18199163847');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyRetirementTool.com — Know Exactly When You Can Retire</title>
+<meta name="description" content="Stop wondering. Start planning. Model your real life scenarios — home sale, income, spending, market conditions — and know exactly when your retirement becomes a reality. Your data is your data, not ours — it never leaves your device.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;color:#0F172A;line-height:1.6}
+:root{--navy:#1F3864;--blue:#2E86DE;--grn:#16A34A;--amber:#D97706;--red:#DC2626}
+
+/* ── Nav ── */
+nav{background:#fff;border-bottom:1px solid #E2E8F0;padding:14px 5%;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(0,0,0,.06)}
+html{scroll-behavior:smooth}
+section[id],div[id]{scroll-margin-top:70px}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+.nav-logo{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:800;color:var(--navy)}
+.nav-logo span{font-size:22px}
+.nav-cta{background:var(--navy);color:#fff;padding:9px 20px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;transition:opacity .2s}
+.nav-cta:hover{opacity:.88}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,#0F1F3D 0%,#1F3864 55%,#1B4D8E 100%);padding:80px 5% 90px;text-align:center;color:#fff;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-badge{display:inline-block;background:rgba(46,134,222,.25);border:1px solid rgba(46,134,222,.5);color:#93C5FD;font-size:13px;font-weight:700;padding:6px 16px;border-radius:20px;margin-bottom:24px;letter-spacing:.05em}
+.hero h1{font-size:clamp(30px,5vw,58px);font-weight:900;line-height:1.15;margin-bottom:20px;letter-spacing:-.5px}
+.hero h1 em{color:#34D399;font-style:normal}
+.hero-sub{font-size:clamp(16px,2vw,20px);color:#93C5FD;max-width:640px;margin:0 auto 36px;line-height:1.65}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-hero{padding:15px 32px;font-size:16px;font-weight:800;border-radius:10px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:transform .15s,opacity .15s}
+.btn-hero:hover{transform:translateY(-1px);opacity:.93}
+.btn-primary{background:#34D399;color:#064E3B}
+.btn-secondary{background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.3)}
+.hero-proof{margin-top:48px;display:flex;justify-content:center;gap:36px;flex-wrap:wrap}
+.proof-item{text-align:center;color:rgba(255,255,255,.7);font-size:13px}
+.proof-item strong{display:block;font-size:26px;font-weight:800;color:#fff;margin-bottom:2px}
+
+/* ── Section utility ── */
+section{padding:72px 5%}
+.section-label{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);margin-bottom:12px}
+h2.section-title{font-size:clamp(26px,4vw,42px);font-weight:800;line-height:1.2;margin-bottom:16px;color:#0F172A}
+.section-sub{font-size:17px;color:#475569;max-width:580px;margin:0 auto 48px;line-height:1.7}
+.text-center{text-align:center}
+
+/* ── Problem section ── */
+.problem{background:#FEF2F2;padding:60px 5%}
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:900px;margin:0 auto}
+.prob-card{background:#fff;border:1px solid #FECACA;border-radius:12px;padding:24px;text-align:center}
+.prob-icon{font-size:36px;margin-bottom:12px}
+.prob-card h3{font-size:16px;font-weight:700;color:#7F1D1D;margin-bottom:8px}
+.prob-card p{font-size:13px;color:#9F1239;line-height:1.6}
+
+/* ── Features ── */
+.features{background:#F8FAFC}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1000px;margin:0 auto}
+.feat-card{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:24px;transition:box-shadow .2s,transform .2s}
+.feat-card:hover{box-shadow:0 8px 30px rgba(0,0,0,.1);transform:translateY(-2px)}
+.feat-icon{width:48px;height:48px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px}
+.feat-card h3{font-size:16px;font-weight:700;color:#0F172A;margin-bottom:8px}
+.feat-card p{font-size:13px;color:#64748B;line-height:1.65}
+
+/* ── Pricing ── */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:980px;margin:0 auto 24px}
+.price-card{border-radius:14px;padding:32px 28px;border:1.5px solid #E2E8F0;transition:transform .2s;position:relative}
+.price-card:hover{transform:translateY(-3px)}
+.price-card.featured{border-color:var(--navy);box-shadow:0 8px 40px rgba(31,56,100,.18)}
+.price-card.featured::before{content:'MOST POPULAR';position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;font-size:11px;font-weight:800;letter-spacing:.1em;padding:4px 14px;border-radius:20px}
+.price-icon{font-size:36px;margin-bottom:12px}
+.price-name{font-size:18px;font-weight:800;color:#0F172A;margin-bottom:4px}
+.price-desc{font-size:13px;color:#64748B;margin-bottom:20px;line-height:1.5}
+.price-amount{font-size:42px;font-weight:900;color:var(--navy);line-height:1;margin-bottom:4px}
+.price-amount sup{font-size:22px;vertical-align:top;margin-top:8px}
+.price-period{font-size:13px;color:#94A3B8;margin-bottom:24px}
+.price-features{list-style:none;margin-bottom:28px}
+.price-features li{font-size:13px;color:#334155;padding:6px 0;display:flex;align-items:flex-start;gap:8px;border-bottom:1px solid #F1F5F9}
+.price-features li:last-child{border:none}
+.price-features li i{color:var(--grn);flex-shrink:0;margin-top:3px}
+.btn-buy{display:block;text-align:center;padding:13px;font-size:15px;font-weight:800;border-radius:9px;text-decoration:none;transition:opacity .2s}
+.btn-buy:hover{opacity:.88}
+.btn-buy-primary{background:var(--navy);color:#fff}
+.btn-buy-secondary{background:#F1F5F9;color:var(--navy)}
+.price-guarantee{text-align:center;font-size:13px;color:#64748B;margin-top:20px}
+.price-guarantee i{color:var(--grn);margin-right:5px}
+
+/* ── Social proof ── */
+.testimonials{background:var(--navy)}
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1000px;margin:0 auto}
+.test-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:24px}
+.test-stars{color:#FCD34D;font-size:14px;margin-bottom:12px}
+.test-body{font-size:14px;color:#E2E8F0;line-height:1.7;margin-bottom:16px;font-style:italic}
+.test-author{font-size:13px;color:#93C5FD;font-weight:600}
+.test-role{font-size:11px;color:#64748B;margin-top:2px}
+
+/* ── FAQ ── */
+.faq-list{max-width:680px;margin:0 auto}
+.faq-item{border-bottom:1px solid #E2E8F0;padding:20px 0}
+.faq-q{font-size:16px;font-weight:700;color:#0F172A;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px}
+.faq-q i{color:var(--blue);flex-shrink:0;margin-top:3px}
+.faq-a{font-size:14px;color:#475569;line-height:1.7;padding-left:24px}
+
+/* ── CTA ── */
+.cta{background:linear-gradient(135deg,#064E3B,#0B3D1F);text-align:center;padding:80px 5%}
+.cta h2{font-size:clamp(26px,4vw,42px);font-weight:900;color:#fff;margin-bottom:16px}
+.cta p{font-size:17px;color:#86EFAC;margin-bottom:36px;max-width:540px;margin-left:auto;margin-right:auto}
+
+/* ── Footer ── */
+footer{background:#0F172A;padding:40px 5%;color:#475569;font-size:13px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;max-width:1000px;margin:0 auto 32px}
+.footer-brand{font-size:16px;font-weight:700;color:#E2E8F0;margin-bottom:8px}
+.footer-desc{font-size:13px;line-height:1.6;margin-bottom:0}
+.footer-links h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#94A3B8;margin-bottom:12px}
+.footer-links a{display:block;color:#64748B;text-decoration:none;margin-bottom:7px;font-size:13px;transition:color .2s}
+.footer-links a:hover{color:#E2E8F0}
+.footer-bottom{border-top:1px solid #1E293B;padding-top:20px;text-align:center;max-width:1000px;margin:0 auto;color:#334155;font-size:12px}
+.footer-disclaimer{font-size:11px;color:#334155;max-width:1000px;margin:16px auto 0;line-height:1.6;text-align:center}
+
+@media(max-width:768px){
+  .problem-grid,.feat-grid,.pricing-grid,.test-grid,.footer-grid{grid-template-columns:1fr}
+  .hero-proof{gap:20px}
+  .hero-btns{flex-direction:column;align-items:center}
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-logo"><span>📊</span> MyRetirementTool.com</div>
+  <a href="#pricing" class="nav-cta">Get Access →</a>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-badge">📊 Simple · Private · Powerful — myretirementtool.com</div>
+  <h1>Know Exactly<br><em>When You Can Retire.</em><br>Stop Guessing. Start Living on Your Terms.</h1>
+  <p class="hero-sub">Stop Wondering. Start Planning. See Exactly When Your Retirement Becomes a Reality.<br><br>You've worked hard enough. Model your real life scenarios — home sale, income, spending, and market conditions — and know your retirement date with complete confidence. <strong style="color:#fff">Your data is your data, not ours — it never leaves your device to ours.</strong></p>
+  <div class="hero-proof">
+    <div class="proof-item"><strong>50-Year</strong>Forward-looking projection</div>
+    <div class="proof-item"><strong>7 Scenarios</strong>Budget &amp; spending modes</div>
+    <div class="proof-item"><strong>Your Data</strong>Never leaves your device</div>
+    <div class="proof-item"><strong>No subscription</strong>One-time payment</div>
+  </div>
+
+  <!-- Tease to demo -->
+  <div style="margin-top:32px;text-align:center">
+    <a href="#demo" style="display:inline-flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:rgba(255,255,255,.8);font-size:13px;font-weight:500;letter-spacing:.04em;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.8)'">
+      <span style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);padding:6px 18px;border-radius:20px;font-size:12px">✨ Try the free calculator first — no purchase needed</span>
+      <span style="font-size:22px;animation:bounce 1.5s infinite">↓</span>
+    </a>
+  </div>
+</div>
+
+<!-- Problem -->
+<div class="problem">
+  <div class="text-center" style="margin-bottom:36px">
+    <div class="section-label">The problem</div>
+    <h2 class="section-title">Retirement planning shouldn't feel this hard</h2>
+  </div>
+  <div class="problem-grid">
+    <div class="prob-card">
+      <div class="prob-icon">🗺️</div>
+      <h3>"Where do I even start?"</h3>
+      <p>Most tools are either too simple to be useful or too complicated to actually use. You need something that guides you through it step by step.</p>
+    </div>
+    <div class="prob-card">
+      <div class="prob-icon">🏠</div>
+      <h3>"Should I sell my house?"</h3>
+      <p>Downsizing could free up hundreds of thousands in equity — but how does it actually change your 20-year picture? Most tools can't answer that.</p>
+    </div>
+    <div class="prob-card">
+      <div class="prob-icon">🔒</div>
+      <h3>"Who can see my financial data?"</h3>
+      <p>Online tools store your numbers on their servers. Ours doesn't. Your data is your data, not ours. Everything runs in your browser — it never leaves your device to our servers.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Features -->
+<section class="features">
+  <div class="text-center">
+    <div class="section-label">What you get</div>
+    <h2 class="section-title">Everything in one place</h2>
+    <p class="section-sub">Built for people who want clarity, not guesswork. No advisor fees, no subscriptions.</p>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#EFF6FF"><i class="fa-solid fa-flag-checkered" style="color:#2E86DE"></i></div>
+      <h3>IRA & Cash Runway</h3>
+      <p>See the exact year your money runs out with a full projection chart. Model pension, annuity, rental income, brokerage, and bonds alongside your IRA — all in one place.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F0FDF4"><i class="fa-solid fa-rotate" style="color:#16A34A"></i></div>
+      <h3>Roth Conversion Optimizer</h3>
+      <p>Model converting your Traditional IRA to Roth before RMDs hit at 73. See exactly how much tax you save and how it changes your long-term balance.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FEF3C7"><i class="fa-solid fa-calendar-check" style="color:#D97706"></i></div>
+      <h3>RMD Calculator</h3>
+      <p>Full IRS Uniform Lifetime Table — see every Required Minimum Distribution year by year, the tax hit, and how it affects your IRA balance. Plan ahead before 73.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FEF2F2"><i class="fa-solid fa-hospital" style="color:#DC2626"></i></div>
+      <h3>Medicare & IRMAA Planner</h3>
+      <p>See your Medicare Part B and D premiums every year in retirement. Get alerted when your income triggers IRMAA surcharges — and how to avoid them.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FAF5FF"><i class="fa-solid fa-percent" style="color:#7C3AED"></i></div>
+      <h3>Tax Bracket Visualizer</h3>
+      <p>Color-coded federal tax bracket for every year of your plan. See the exact window to do Roth conversions, and how much headroom you have before jumping brackets.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FFF7ED"><i class="fa-solid fa-tornado" style="color:#EA580C"></i></div>
+      <h3>Sequence of Returns Risk</h3>
+      <p>What happens if the market crashes the year you retire? Test an early crash, mid-retirement crash, and late crash — see which scenarios your plan survives.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F0FDF4"><i class="fa-solid fa-house-circle-check" style="color:#16A34A"></i></div>
+      <h3>Home Sale & Downsize</h3>
+      <p>Model selling your home and buying smaller. Equity flows into your cash position automatically — see the real 30-year impact on your retirement plan.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#EFF6FF"><i class="fa-solid fa-dice" style="color:#2E86DE"></i></div>
+      <h3>Monte Carlo Simulation</h3>
+      <p>Run 1,000 random market scenarios to find your probability of retirement success. See your plan's success rate under realistic market volatility.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FAF5FF"><i class="fa-solid fa-receipt" style="color:#7C3AED"></i></div>
+      <h3>Monthly Budget Planner</h3>
+      <p>7 spending scenarios: Current, Projected Retirement, Necessity, Nice-to-Have, Luxury, Rental, and Alt. Living — every line item modeled simultaneously.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FEF3C7"><i class="fa-solid fa-heart" style="color:#D97706"></i></div>
+      <h3>Legacy & Estate Planner</h3>
+      <p>Set a legacy goal and see if your plan achieves it. Model annual gifting and charitable giving. See the spend-more vs. leave-more trade-off clearly.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FEF2F2"><i class="fa-solid fa-table" style="color:#DC2626"></i></div>
+      <h3>Year-by-Year Projections</h3>
+      <p>Enter your actual account balances each year. The plan automatically reforecasts everything forward based on your real numbers — 50 years of detail.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F0FDF4"><i class="fa-solid fa-shield-halved" style="color:#16A34A"></i></div>
+      <h3>Complete Privacy — Yours Forever</h3>
+      <p>One-time purchase. Runs in your browser. Your data never leaves your device — we never see your financial information. Export and import your plan anytime.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section id="pricing">
+  <div class="text-center">
+    <div class="section-label">Simple pricing</div>
+    <h2 class="section-title">One-time purchase. No subscriptions.</h2>
+    <p class="section-sub">Pay once, use forever. A financial advisor charges $250/hour. For the price of lunch you can have your future blueprinted.</p>
+  </div>
+  <div style="max-width:440px;margin:0 auto">
+
+    <div class="price-card featured" style="text-align:center">
+      <div class="price-icon">🏡</div>
+      <div class="price-name">Retirement Planner</div>
+      <div class="price-desc">Know exactly when you can retire — model your real life scenarios</div>
+      <div class="price-amount" style="font-size:52px"><sup>$</sup>49<span style="font-size:22px">.99</span></div>
+      <div class="price-period">one-time · yours forever · no subscription</div>
+      <ul class="price-features" style="text-align:left;margin-top:16px">
+        <li><i class="fa-solid fa-check"></i>Dashboard — net worth, runway & income at a glance</li>
+        <li><i class="fa-solid fa-check"></i>IRA & cash runway — 50-year projection</li>
+        <li><i class="fa-solid fa-check"></i>Roth conversion optimizer</li>
+        <li><i class="fa-solid fa-check"></i>RMD calculator — full IRS table, every year</li>
+        <li><i class="fa-solid fa-check"></i>Medicare & IRMAA surcharge planner</li>
+        <li><i class="fa-solid fa-check"></i>Tax bracket visualizer — year by year</li>
+        <li><i class="fa-solid fa-check"></i>Sequence of returns risk — 3 crash scenarios</li>
+        <li><i class="fa-solid fa-check"></i>Monte Carlo simulation — 1,000 scenarios</li>
+        <li><i class="fa-solid fa-check"></i>Home sale & downsize modeler</li>
+        <li><i class="fa-solid fa-check"></i>Monthly budget — 7 spending scenarios</li>
+        <li><i class="fa-solid fa-check"></i>Pension, annuity, rental & bond income</li>
+        <li><i class="fa-solid fa-check"></i>Legacy & estate goal planner</li>
+        <li><i class="fa-solid fa-check"></i>Year-by-year editable projections</li>
+        <li><i class="fa-solid fa-check"></i>Your data never leaves your device</li>
+      </ul>
+      <a href="https://buy.stripe.com/eVqdR9e0jgmCcRL2Ap2cg02" class="btn-buy btn-buy-primary" target="_blank" style="margin-top:8px;font-size:17px;padding:15px">Get Instant Access — $49.99 →</a>
+      <div style="margin-top:12px;font-size:12px;color:#94A3B8">One-time payment · No subscription · myretirementtool.com</div>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- DEMO — Live Mini Calculator -->
+<section id="demo" style="background:#F8FAFC;padding:72px 5%">
+  <div class="text-center" style="margin-bottom:40px">
+    <div class="section-label">See it in action</div>
+    <h2 class="section-title">Try it right now — free</h2>
+    <p class="section-sub">Enter your numbers. See your retirement picture instantly. No account, no email, no commitment.</p>
+  </div>
+
+  <div style="max-width:780px;margin:0 auto">
+    <div style="background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.10);overflow:hidden">
+
+      <!-- Header -->
+      <div style="background:#1B2A4A;padding:15px 24px;display:flex;align-items:center;gap:10px">
+        <div style="width:32px;height:32px;background:#2E86DE;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px">📊</div>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:#fff">Retirement Planner — Free Preview</div>
+          <div style="font-size:11px;color:#93C5FD">Your numbers stay in your browser — never sent to us</div>
+        </div>
+        <div style="margin-left:auto;background:rgba(255,255,255,.12);padding:3px 10px;border-radius:10px;font-size:10px;color:#86EFAC;font-weight:600">● Live</div>
+      </div>
+
+      <div style="padding:28px">
+
+        <!-- Section: Today -->
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#64748B;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #E2E8F0">Where you are today</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
+          <div>
+            <label style="display:block;font-size:11px;font-weight:600;color:#64748B;margin-bottom:5px">Current age</label>
+            <input id="d-age" type="number" value="58" min="30" max="75" oninput="rd()"
+              style="width:100%;padding:10px 12px;font-size:18px;font-weight:600;border:2px solid #E2E8F0;border-radius:9px;color:#0F172A;text-align:center;transition:border-color .2s" onfocus="this.style.borderColor='#2E86DE'" onblur="this.style.borderColor='#E2E8F0'">
+            <div style="font-size:10px;color:#94A3B8;margin-top:3px;text-align:center">years old</div>
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;font-weight:600;color:#64748B;margin-bottom:5px">Annual income</label>
+            <input id="d-income" type="number" value="95000" step="5000" oninput="rd()"
+              style="width:100%;padding:10px 12px;font-size:18px;font-weight:600;border:2px solid #E2E8F0;border-radius:9px;color:#0F172A;text-align:center;transition:border-color .2s" onfocus="this.style.borderColor='#2E86DE'" onblur="this.style.borderColor='#E2E8F0'">
+            <div style="font-size:10px;color:#94A3B8;margin-top:3px;text-align:center">dollars / year</div>
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;font-weight:600;color:#64748B;margin-bottom:5px">Annual expenses</label>
+            <input id="d-exp" type="number" value="72000" step="1000" oninput="rd()"
+              style="width:100%;padding:10px 12px;font-size:18px;font-weight:600;border:2px solid #E2E8F0;border-radius:9px;color:#0F172A;text-align:center;transition:border-color .2s" onfocus="this.style.borderColor='#2E86DE'" onblur="this.style.borderColor='#E2E8F0'">
+            <div style="font-size:10px;color:#94A3B8;margin-top:3px;text-align:center">dollars / year</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px">
+          <div>
+            <label style="display:block;font-size:11px;font-weight:600;color:#64748B;margin-bottom:5px">Current retirement funds (IRA / 401k)</label>
+            <input id="d-funds" type="number" value="380000" step="10000" oninput="rd()"
+              style="width:100%;padding:10px 12px;font-size:18px;font-weight:600;border:2px solid #E2E8F0;border-radius:9px;color:#0F172A;text-align:center;transition:border-color .2s" onfocus="this.style.borderColor='#2E86DE'" onblur="this.style.borderColor='#E2E8F0'">
+            <div style="font-size:10px;color:#94A3B8;margin-top:3px;text-align:center">total balance today</div>
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;font-weight:600;color:#64748B;margin-bottom:5px">Annual contributions to retirement</label>
+            <input id="d-contrib" type="number" value="18000" step="1000" oninput="rd()"
+              style="width:100%;padding:10px 12px;font-size:18px;font-weight:600;border:2px solid #E2E8F0;border-radius:9px;color:#0F172A;text-align:center;transition:border-color .2s" onfocus="this.style.borderColor='#2E86DE'" onblur="this.style.borderColor='#E2E8F0'">
+            <div style="font-size:10px;color:#94A3B8;margin-top:3px;text-align:center">per year (incl. employer match)</div>
+          </div>
+        </div>
+
+        <!-- Section: Retirement -->
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#64748B;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #E2E8F0">Your retirement projections</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
+          <div>
+            <label style="display:block;font-size:11px;font-weight:600;color:#64748B;margin-bottom:5px">Target retirement age</label>
+            <input id="d-retage" type="number" value="65" min="50" max="80" oninput="rd()"
+              style="width:100%;padding:10px 12px;font-size:18px;font-weight:600;border:2px solid #E2E8F0;border-radius:9px;color:#0F172A;text-align:center;transition:border-color .2s" onfocus="this.style.borderColor='#2E86DE'" onblur="this.style.borderColor='#E2E8F0'">
+            <div style="font-size:10px;color:#94A3B8;margin-top:3px;text-align:center">years old</div>
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;font-weight:600;color:#64748B;margin-bottom:5px">SS + other income / month</label>
+            <input id="d-ss" type="number" value="3200" step="100" oninput="rd()"
+              style="width:100%;padding:10px 12px;font-size:18px;font-weight:600;border:2px solid #E2E8F0;border-radius:9px;color:#0F172A;text-align:center;transition:border-color .2s" onfocus="this.style.borderColor='#2E86DE'" onblur="this.style.borderColor='#E2E8F0'">
+            <div style="font-size:10px;color:#94A3B8;margin-top:3px;text-align:center">pension, SS, rental etc.</div>
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;font-weight:600;color:#64748B;margin-bottom:5px">Projected cash savings</label>
+            <input id="d-cash" type="number" value="50000" step="5000" oninput="rd()"
+              style="width:100%;padding:10px 12px;font-size:18px;font-weight:600;border:2px solid #E2E8F0;border-radius:9px;color:#0F172A;text-align:center;transition:border-color .2s" onfocus="this.style.borderColor='#2E86DE'" onblur="this.style.borderColor='#E2E8F0'">
+            <div style="font-size:10px;color:#94A3B8;margin-top:3px;text-align:center">at retirement</div>
+          </div>
+        </div>
+        <div style="margin-bottom:24px">
+          <label style="display:block;font-size:11px;font-weight:600;color:#64748B;margin-bottom:5px">Projected monthly expenses in retirement</label>
+          <input id="d-retexp" type="number" value="5500" step="500" oninput="rd()"
+            style="width:280px;padding:10px 12px;font-size:18px;font-weight:600;border:2px solid #E2E8F0;border-radius:9px;color:#0F172A;text-align:center;transition:border-color .2s" onfocus="this.style.borderColor='#2E86DE'" onblur="this.style.borderColor='#E2E8F0'">
+          <div style="font-size:10px;color:#94A3B8;margin-top:3px">per month in retirement (often 70–80% of current)</div>
+        </div>
+
+        <!-- Results -->
+        <div style="background:#F0F9FF;border:2px solid #BAE6FD;border-radius:12px;padding:22px;margin-bottom:20px">
+          <div style="font-size:12px;font-weight:700;color:#0369A1;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Your retirement snapshot</div>
+
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
+            <div style="text-align:center;background:#fff;border-radius:9px;padding:12px 8px;border:1px solid #BAE6FD">
+              <div style="font-size:10px;font-weight:600;color:#0369A1;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">IRA at retirement</div>
+              <div id="r-ira" style="font-size:20px;font-weight:700;color:#0F172A">—</div>
+              <div id="r-ira-sub" style="font-size:10px;color:#64748B;margin-top:2px"></div>
+            </div>
+            <div style="text-align:center;background:#fff;border-radius:9px;padding:12px 8px;border:1px solid #BAE6FD">
+              <div style="font-size:10px;font-weight:600;color:#0369A1;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">SS covers</div>
+              <div id="r-sspct" style="font-size:20px;font-weight:700;color:#0F172A">—</div>
+              <div style="font-size:10px;color:#64748B;margin-top:2px">of ret. expenses</div>
+            </div>
+            <div style="text-align:center;background:#fff;border-radius:9px;padding:12px 8px;border:1px solid #BAE6FD">
+              <div style="font-size:10px;font-weight:600;color:#0369A1;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">Monthly gap</div>
+              <div id="r-gap" style="font-size:20px;font-weight:700;color:#0F172A">—</div>
+              <div style="font-size:10px;color:#64748B;margin-top:2px">from IRA / savings</div>
+            </div>
+            <div style="text-align:center;background:#fff;border-radius:9px;padding:12px 8px;border:1px solid #BAE6FD">
+              <div style="font-size:10px;font-weight:600;color:#0369A1;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">IRA lasts until</div>
+              <div id="r-dep" style="font-size:20px;font-weight:700;color:#0F172A">—</div>
+              <div id="r-dep-sub" style="font-size:10px;color:#64748B;margin-top:2px"></div>
+            </div>
+          </div>
+
+          <!-- Chart -->
+          <div style="margin-bottom:12px">
+            <div style="font-size:11px;color:#0369A1;margin-bottom:6px;font-weight:500">IRA balance from retirement onward</div>
+            <div style="position:relative;height:110px">
+              <canvas id="demo-chart" role="img" aria-label="Chart showing projected IRA balance from retirement age until depletion or age 95"></canvas>
+            </div>
+          </div>
+
+          <div id="r-verdict" style="border-radius:8px;padding:11px 14px;font-size:13px;font-weight:500;text-align:center;line-height:1.5"></div>
+        </div>
+
+        <!-- Teaser -->
+        <div style="background:#F0FDF4;border:1.5px solid #BBF7D0;border-radius:12px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#14532D;margin-bottom:4px">Want the complete plan?</div>
+            <div style="font-size:12px;color:#166534;line-height:1.6">The full Retirement Planner adds: home sale &amp; downsize modeling · 7 budget scenarios · 50-year projection · net worth tracker · SS coverage analysis · print-ready plan summary — and lets you enter actuals each year so your plan stays current.</div>
+          </div>
+          <a href="https://buy.stripe.com/eVqdR9e0jgmCcRL2Ap2cg02" target="_blank"
+            style="background:#15803D;color:#fff;padding:13px 22px;border-radius:9px;font-size:14px;font-weight:700;text-decoration:none;white-space:nowrap;flex-shrink:0">
+            Get Full Access — $49.99 →
+          </a>
+        </div>
+        <div style="text-align:center;margin-top:10px;font-size:11px;color:#94A3B8">One-time payment · No subscription · Your data never leaves this page</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+let demoChart=null;
+const $m=v=>{const a=Math.abs(Math.round(v)),s=v<0?'-$':'$';if(a>=1e6)return s+(a/1e6).toFixed(2)+'M';if(a>=1000)return s+(a/1000).toFixed(0)+'K';return s+a.toLocaleString();};
+
+function rd(){
+  const age=+document.getElementById('d-age').value||58;
+  const income=+document.getElementById('d-income').value||95000;
+  const exp=+document.getElementById('d-exp').value||72000;
+  const funds=+document.getElementById('d-funds').value||380000;
+  const contrib=+document.getElementById('d-contrib').value||18000;
+  const retAge=+document.getElementById('d-retage').value||65;
+  const ssMonthly=+document.getElementById('d-ss').value||3200;
+  const cash=+document.getElementById('d-cash').value||50000;
+  const retExpMonthly=+document.getElementById('d-retexp').value||5500;
+
+  const rate=0.06; // 6% assumed return
+  const yearsToRet=Math.max(0,retAge-age);
+
+  // Grow IRA to retirement
+  let ira=funds;
+  for(let y=0;y<yearsToRet;y++) ira=ira*(1+rate)+contrib;
+
+  const ssAnnual=ssMonthly*12;
+  const retExpAnnual=retExpMonthly*12;
+  const annualGap=Math.max(0,retExpAnnual-ssAnnual);
+  const ssPct=Math.min(100,Math.round(ssAnnual/retExpAnnual*100));
+  const monthlyGap=Math.max(0,retExpMonthly-ssMonthly);
+
+  // Project IRA from retirement
+  let bal=ira+cash;
+  const balData=[Math.round(bal)];
+  const labels=['Retire\nAge '+retAge];
+  let depleteAge=null;
+  for(let yr=1;yr<=35;yr++){
+    bal=bal*(1+rate)-annualGap;
+    if(bal<0)bal=0;
+    balData.push(Math.round(bal));
+    labels.push('Age '+(retAge+yr));
+    if(bal<=0&&depleteAge===null) depleteAge=retAge+yr;
+  }
+
+  // Update KPIs
+  document.getElementById('r-ira').textContent=$m(ira);
+  document.getElementById('r-ira-sub').textContent=yearsToRet+' years of growth';
+  document.getElementById('r-sspct').textContent=ssPct+'%';
+  document.getElementById('r-sspct').style.color=ssPct>=80?'#16A34A':ssPct>=50?'#D97706':'#DC2626';
+  document.getElementById('r-gap').textContent='$'+Math.round(monthlyGap).toLocaleString()+'/mo';
+  document.getElementById('r-gap').style.color=monthlyGap>3000?'#DC2626':monthlyGap>1000?'#D97706':'#16A34A';
+
+  const depEl=document.getElementById('r-dep');
+  const depSub=document.getElementById('r-dep-sub');
+  if(depleteAge){
+    depEl.textContent='Age '+depleteAge;
+    depEl.style.color=depleteAge<retAge+15?'#DC2626':depleteAge<retAge+25?'#D97706':'#16A34A';
+    depSub.textContent=(depleteAge-retAge)+' yrs into retirement';
+  }else{
+    depEl.textContent='Age '+(retAge+35)+'+';
+    depEl.style.color='#16A34A';
+    depSub.textContent='Lasts full projection';
+  }
+
+  // Verdict
+  const vEl=document.getElementById('r-verdict');
+  if(!depleteAge){
+    vEl.style.cssText='border-radius:8px;padding:11px 14px;font-size:13px;font-weight:500;text-align:center;line-height:1.5;background:#F0FDF4;color:#14532D;border:1px solid #BBF7D0';
+    vEl.innerHTML='✅ <strong>Strong position.</strong> Based on these projections your retirement funds could last well beyond '+( retAge+35)+'. The full planner shows you how to optimize further and model different life scenarios.';
+  }else if(depleteAge>=retAge+20){
+    vEl.style.cssText='border-radius:8px;padding:11px 14px;font-size:13px;font-weight:500;text-align:center;line-height:1.5;background:#FFFBEB;color:#78350F;border:1px solid #FDE68A';
+    vEl.innerHTML='⚠️ <strong>Plan carefully.</strong> Your funds may deplete around age '+depleteAge+'. The full planner shows exactly which levers to pull — home sale, spending adjustments, or SS timing — to extend your runway.';
+  }else{
+    vEl.style.cssText='border-radius:8px;padding:11px 14px;font-size:13px;font-weight:500;text-align:center;line-height:1.5;background:#FEF2F2;color:#7F1D1D;border:1px solid #FECACA';
+    vEl.innerHTML='🔴 <strong>Action needed.</strong> At this rate funds could deplete by age '+depleteAge+'. The full planner shows your complete options — home sale equity, spending scenarios, and exactly what changes make the difference.';
+  }
+
+  // Chart
+  if(demoChart)demoChart.destroy();
+  demoChart=new Chart(document.getElementById('demo-chart'),{
+    type:'line',
+    data:{labels,datasets:[{
+      label:'Retirement funds',
+      data:balData,
+      borderColor:depleteAge&&depleteAge<retAge+20?'#EF4444':'#2E86DE',
+      backgroundColor:depleteAge&&depleteAge<retAge+20?'rgba(239,68,68,.08)':'rgba(46,134,222,.08)',
+      fill:true,tension:.4,borderWidth:2.5,pointRadius:0
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'Balance: '+$m(c.raw)}}},
+      scales:{
+        y:{ticks:{callback:v=>$m(v),font:{size:9},color:'#94A3B8'},grid:{color:'rgba(0,0,0,.04)'}},
+        x:{ticks:{maxTicksLimit:7,autoSkip:true,font:{size:9},color:'#94A3B8',maxRotation:0},grid:{display:false}}
+      }
+    }
+  });
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',rd);}else{rd();}
+</script>
+
+
+<!-- Testimonials -->
+<section class="testimonials">
+  <div class="text-center" style="margin-bottom:48px">
+    <div class="section-label" style="color:#86EFAC">What people are saying</div>
+    <h2 class="section-title" style="color:#fff">Real results from real planners</h2>
+  </div>
+  <div class="test-grid">
+    <div class="test-card">
+      <div class="test-stars">★★★★★</div>
+      <div class="test-body">"I've spent thousands on financial advisors who never showed me a chart this clear. I could see exactly when my IRA runs out — and exactly what I need to do to push that date back 5 years."</div>
+      <div class="test-author">Robert M.</div>
+      <div class="test-role">Retired engineer, age 64</div>
+    </div>
+    <div class="test-card">
+      <div class="test-stars">★★★★★</div>
+      <div class="test-body">"The home sale scenario tool changed our plans. We were going to downsize in 2026 but the model showed us we'd actually be better off waiting until 2029. That's a $47,000 difference in equity."</div>
+      <div class="test-author">Patricia &amp; James K.</div>
+      <div class="test-role">Pre-retirees, Palm City FL</div>
+    </div>
+    <div class="test-card">
+      <div class="test-stars">★★★★★</div>
+      <div class="test-body">"The compounding chart is the most powerful thing I've ever shown a 28-year-old. Starting at 25 vs 35 with the same total contributions — the gap is shocking. This should be taught in every school."</div>
+      <div class="test-author">Sandra L.</div>
+      <div class="test-role">HR Manager, age 45</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section>
+  <div class="text-center" style="margin-bottom:48px">
+    <div class="section-label">Questions answered</div>
+    <h2 class="section-title">Frequently asked questions</h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q"><i class="fa-solid fa-circle-question"></i>Does my financial data go to your servers?</div>
+      <div class="faq-a">No. All your data is stored locally in your browser using localStorage. We never see, collect, or store your financial numbers. You can export your plan as a JSON file anytime for backup.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><i class="fa-solid fa-circle-question"></i>Is this financial advice?</div>
+      <div class="faq-a">No — these are planning tools for your own use. The outputs are based on assumptions you enter and are hypothetical projections. Always consult a licensed financial advisor for personalized advice before making major decisions.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><i class="fa-solid fa-circle-question"></i>What happens after I buy?</div>
+      <div class="faq-a">You'll receive your license key and email address by email within minutes. Open the app in any browser, enter your key, and you're in. Works on Mac, Windows, iPad, and mobile.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><i class="fa-solid fa-circle-question"></i>How many devices can I use it on?</div>
+      <div class="faq-a">One license = one installation. If you need to move it to a new device, contact us and we'll sort it out. Family/advisor multi-seat licenses are available.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><i class="fa-solid fa-circle-question"></i>Do I need to know anything about finance to use this?</div>
+      <div class="faq-a">No. The tools come pre-filled with reasonable default assumptions. You just update the numbers that apply to you — your salary, SS amount, IRA balance, expenses. Everything else calculates automatically.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><i class="fa-solid fa-circle-question"></i>I'm a financial advisor. Can I use this with clients?</div>
+      <div class="faq-a">Yes, with an advisor license. Contact us at support@myretirementtool.com for pricing on multi-client, white-label, and advisor packages.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<div class="cta">
+  <h2>Your plan. Your data. Your future.</h2>
+  <p>Simple guided inputs, powerful projections, and complete privacy — your data is your data, not ours — it never leaves your device to our servers. Just $49.99.</p>
+  <div class="hero-btns" style="justify-content:center">
+    <a href="https://buy.stripe.com/eVqdR9e0jgmCcRL2Ap2cg02" target="_blank" class="btn-hero btn-primary"><i class="fa-solid fa-unlock"></i> Get Instant Access — $49.99</a>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">📊 MyRetirementTool.com</div>
+      <p class="footer-desc">Simple, private, powerful retirement planning software. Built for real people who want clarity and control — not complexity.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Product</h4>
+      <a href="#pricing">Retirement Planner</a>
+      <a href="mailto:support@myretirementtool.com">Advisor License</a>
+    </div>
+    <div class="footer-links">
+      <h4>Legal &amp; Support</h4>
+      <a href="Terms_and_EULA.html">Terms of Service / EULA</a>
+      <a href="#">Privacy Policy</a>
+      <a href="mailto:support@myretirementtool.com">Support</a>
+      <a href="mailto:legal@myretirementtool.com">Legal</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 MyRetirementTool.com — All Rights Reserved. One-time purchase · Secure checkout · No subscription</div>
+  <div class="footer-disclaimer">
+    <strong>Important Disclaimer:</strong> MyRetirementTool.com software products are for informational and educational purposes only. They do not constitute financial, investment, tax, or legal advice. All projections are hypothetical and based on user-entered assumptions. Past performance does not guarantee future results. Consult a qualified financial professional before making significant financial decisions. MyRetirementTool.com is not a registered investment advisor or broker-dealer.
+  </div>
+</footer>
+
+</body>
+</html>
