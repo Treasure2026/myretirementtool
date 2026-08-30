@@ -715,7 +715,7 @@ table.mb .ei-mb:focus{outline:none;border-color:#A87800}
   </div>
 </div>
   <div style="font-size:14px;font-weight:700;margin-bottom:4px">Your net worth over time</div>
-  <div style="font-size:12px;color:#64748B;margin-bottom:14px">Slide the bar to see your projected net worth in any year — from today on the left to the end of your plan on the right. Add other assets and debts on the <a href="#" onclick="go('assumptions',null);return false;" style="color:#2E86DE;font-weight:700">My Plan Inputs</a> page.</div>
+  <div style="font-size:12px;color:#64748B;margin-bottom:14px">Slide the bar to see your projected net worth in any year — from today on the left to the end of your plan on the right. Add other assets and debts below.</div>
 
   <!-- Interactive net-worth-over-time scrubber -->
   <div id="nw-scrub-wrap" style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:18px">
@@ -1031,7 +1031,7 @@ table.mb .ei-mb:focus{outline:none;border-color:#A87800}
 
 <!-- SEQUENCE RISK TAB -->
 <div id="p-sequence" class="panel">
-<div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:11px;color:#64748B;line-height:1.5">ℹ️ <strong>For informational and educational purposes only.</strong> These are stress-test scenarios based on user-defined crash sizes — not predictions or historical simulations. Actual market outcomes will differ. This is not investment advice. Consult a qualified financial planner (CFP) or CPA before making major decisions.</div>
+<div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:11px;color:#64748B;line-height:1.5">ℹ️ <strong>For informational and educational purposes only.</strong> These are stress-test scenarios based on user-defined crash sizes — not predictions or historical simulations. This test follows your IRA/401k balance only and does not count cash, brokerage, or other savings, so it is deliberately conservative. Actual market outcomes will differ. This is not investment advice. Consult a qualified financial planner (CFP) or CPA before making major decisions.</div>
 <div class="help-banner"><div class="help-banner-hdr" onclick="toggleHelp('sequence')"><div class="help-banner-title">📖 How to use Sequence of Returns Risk</div><div class="help-banner-chevron" id="help-chev-sequence">▼</div></div><div class="help-banner-body" id="help-body-sequence">
 <div class="help-step"><div class="help-step-icon">📉</div><div class="help-step-text"><strong>What is sequence of returns risk?</strong> — A market crash in year 1 of retirement is far more damaging than the same crash in year 15. When you're drawing down savings, early losses force you to sell more shares at the bottom — permanently reducing your balance for the rest of retirement.</div></div>
 <div class="help-step"><div class="help-step-icon">📊</div><div class="help-step-text"><strong>How to read the chart</strong> — Each group of bars shows one crash scenario. The <strong>purple bar</strong> is your IRA balance the year before the crash. The <strong>colored bar</strong> is your IRA immediately after the crash drop. The <strong>green bar</strong> is your IRA at the end of your plan. The bigger the gap between purple and colored, the worse the crash damage.</div></div>
@@ -1046,6 +1046,7 @@ table.mb .ei-mb:focus{outline:none;border-color:#A87800}
   <div style="font-size:11px;color:#64748B;margin-bottom:12px">Set how severe the crash is and how long recovery takes. Then customize the year each scenario hits.</div>
   <div class="ar"><label>Portfolio drop in crash year (%)</label><input id="seq-drop" type="number" value="35" step="5" min="10" max="60" oninput="drawSequence()"></div>
   <div class="ar"><label>Years to fully recover</label><input id="seq-recovery" type="number" value="3" min="1" max="10" oninput="drawSequence()"></div>
+  <div id="seq-recovery-note" style="font-size:10px;color:#64748B;margin:-4px 0 8px;line-height:1.45"></div>
   <div style="font-size:11px;font-weight:700;color:#475569;margin:12px 0 8px">Customize crash year for each scenario:</div>
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
     <div class="ar"><label style="color:#EF4444;font-weight:600">🔴 Early crash year</label><input id="seq-yr1" type="number" value="" placeholder="retire yr" oninput="drawSequence()"></div>
@@ -1403,6 +1404,27 @@ function currentHomeEquity(yr){
   return{gross:grossEquity,net:0,val:projectedVal,mort:projectedMort};
 }
 
+
+// Describe the home-move scenario accurately: buying a cheaper home is a downsize,
+// a pricier one is an upsize. Used for user-facing labels only — the internal scenario
+// key stays 'downsize'.
+function moveLabel(cap){
+  const cur=gd('currentVal')||0, nw=gd('newVal')||0;
+  let t;
+  if(nw<=0) t='sell home';
+  else if(nw<cur*0.95) t='sell & downsize';
+  else if(nw>cur*1.05) t='sell & upsize';
+  else t='sell & move';
+  return cap ? t.replace(/\b\w/g,c=>c.toUpperCase()).replace(' & ',' & ') : t;
+}
+function moveVerb(){
+  const cur=gd('currentVal')||0, nw=gd('newVal')||0;
+  if(nw<=0) return 'Selling your home (and not rebuying)';
+  if(nw<cur*0.95) return 'Selling and downsizing';
+  if(nw>cur*1.05) return 'Selling and upsizing';
+  return 'Selling and moving';
+}
+window.moveLabel=moveLabel;window.moveVerb=moveVerb;
 function downsizeCashGain(){
   const saleYr=gd('saleYr');
   const sale=currentHomeEquity(saleYr);
@@ -1757,7 +1779,10 @@ function sim(scenario){
     // Downsize: current home gone from sale year onward; new home equity appears instead
     // If saleYr is 0 (not planning to sell), the home stays in every year.
     const hasSale = saleYr > 0;
-    const homeGone = hasSale && yr >= saleYr;
+    // The home only leaves net worth in the DOWNSIZE scenario, where it is actually sold and
+    // the proceeds move into cash. In the STAY PUT scenario you keep the house for the whole
+    // plan, so its equity keeps counting even if a sale year is entered on the Home Equity tab.
+    const homeGone = hasSale && yr >= saleYr && scenario==='downsize';
     // Current-home equity counts until the sale year in BOTH scenarios — before you sell,
     // you still own the house. After the sale year it leaves NW (proceeds move to cash, and
     // in the downsize scenario the new home's equity appears instead).
@@ -1785,7 +1810,7 @@ function sim(scenario){
     rows.push({yr,age,working,phase,salary:salVal,other:othVal,ss,cint,cdraw,idraw,rmd:Math.round(rmd||0),
       shortfall:working?0:Math.max(0,tout-salVal-othVal-suppInc-ss-cint),
       tinc:working?(salVal+othVal+ss+cint):tinc,
-      expenses:totalExp,healthcare:0,tax:working?(salVal+othVal)*taxW:tax,
+      expenses:totalExp,recurringExp:expVal,healthcare:0,tax:working?(salVal+othVal)*taxW:tax,
       tout:working?totalExp+(salVal+othVal)*taxW:tout,
       net,unc,ira,cash,brok,bonds,homeEq,newHomeEq,extraAssets,extraDebts,nw,
       cashChg,homeSaleInj,bsTriggered,
@@ -1845,13 +1870,25 @@ function drawDash(rows,baseRows,dsRows){
 
   const _hasSale = window._applyHomeSale!==false && gd('saleYr')>0 && gd('currentVal')>0;
   const _kpis=[
-    {l:`Net worth at retirement (${retireYr})${_hasSale?(gd('newVal')>0?' — Sell & Downsize':' — Sell Home'):' — Stay Put'}`,v:$m(rr.nw),s:_hasSale?(gd('newVal')>0?'All assets incl. new home':'Proceeds added to cash'):'Includes your current home',c:'acc'},
+    {l:`Net worth at retirement (${retireYr})${_hasSale?(' — '+moveLabel(true)):' — Stay Put'}`,v:$m(rr.nw),s:_hasSale?(gd('newVal')>0?'All assets incl. new home':'Proceeds added to cash'):'Includes your current home',c:'acc'},
     {l:'IRA at retirement',v:$m(rows.find(r=>r.yr===retireYr-1)?.ira||0),s:'Before first draw',c:''},
     {l:fu?'Shortfall begins':'Fully funded to',v:fu?`${fu.yr} (age ${fu.age})`:`Age ${last.age}`,s:fu?`${$m(fu.unc)}/yr gap`:'No gap projected',c:fu?'bad':'good'},
   ];
   // Only show the "vs Stay put" comparison card when a sale is actually modeled.
   if(_hasSale){
-    _kpis.push({l:'vs Stay put — net worth gain',v:$m(last.nw-baseLast.nw),s:`Difference at end of plan (${last.yr})`,c:last.nw>baseLast.nw?'good':'bad'});
+    // Lead with liquid/investable wealth, not total net worth. A downsize necessarily lowers
+    // total net worth — you own less house — so that figure is always negative and reads as a
+    // warning even when the move frees up spendable money. Spendable dollars are the point.
+    const _liq = r => (r.cash||0)+(r.ira||0)+(r.brok||0)+(r.bonds||0);
+    const _liqGain = _liq(last)-_liq(baseLast);
+    const _nwGain = last.nw-baseLast.nw;
+    const _nwWord = _nwGain>=0?'more':'less';
+    _kpis.push({
+      l:'vs Stay put — spendable wealth',
+      v:(_liqGain>=0?'+':'−')+$m(Math.abs(_liqGain)),
+      s:`Cash + IRA + investments at ${last.yr} · total net worth ${$m(Math.abs(_nwGain))} ${_nwWord} (incl. home)`,
+      c:_liqGain>=0?'good':'bad'
+    });
   }
   document.getElementById('d-kpis').innerHTML=_kpis.map(k=>`<div class="kcard"><div class="kl">${k.l}</div><div class="kv ${k.c}">${k.v}</div><div class="ks">${k.s}</div></div>`).join('');
 
@@ -1882,7 +1919,7 @@ function drawDash(rows,baseRows,dsRows){
         m:`Plan is fully funded through age ${last.age} — including your backstop plan applied in ${ga('bsYear')}. No projected shortfall.`});
     } else {
       const _hasSaleMsg = window._applyHomeSale!==false && gd('saleYr')>0 && gd('currentVal')>0;
-      const _planLabel = _hasSaleMsg ? (gd('newVal')>0?'Your sell & downsize plan':'Your sell-home plan') : 'Your plan';
+      const _planLabel = _hasSaleMsg ? ('Your '+moveLabel(false)+' plan') : 'Your plan';
       alts.push({c:'ag',i:'fa-circle-check',m:`${_planLabel} is fully funded with no uncovered shortfall through age ${last.age}.`});
     }
   }
@@ -1905,7 +1942,7 @@ function drawDash(rows,baseRows,dsRows){
     const liquid = (r) => (r.cash||0) + (r.ira||0) + (r.brok||0) + (r.bonds||0);
     const liquidGain = liquid(last) - liquid(baseLast);
     const buysNew=gd('newVal')>0;
-    const action=buysNew?'Selling and downsizing':'Selling your home (and not rebuying)';
+    const action=moveVerb();
     const dir = (v) => v>0?'adds':'reduces';
     alts.push({c:'ai',i:'fa-house-circle-check',
       m:`${action} ${dir(gain)} <strong>total net worth by ${$m(Math.abs(gain))}</strong> by ${last.yr} vs staying put — but that includes your home. The more useful figure: it ${dir(liquidGain)} your <strong>liquid/investable wealth (cash + IRA + brokerage + bonds) by ${$m(Math.abs(liquidGain))}</strong> — the dollars you can actually spend. The gap comes from proceeds compounding at your investment return rate vs your home's appreciation rate.`});
@@ -1954,10 +1991,10 @@ function drawDash(rows,baseRows,dsRows){
   if(ch.ds)ch.ds.destroy();
   ch.ds=new Chart(document.getElementById('cDS'),{type:'line',data:{labels:lbls,datasets:[
     {label:'Stay put',data:baseRows.map(r=>Math.round(r.nw)),borderColor:'#2E86DE',fill:false,tension:.3,borderWidth:2,pointRadius:0},
-    {label:'Sell & downsize',data:rows.map(r=>Math.round(r.nw)),borderColor:'#27AE60',backgroundColor:'rgba(39,174,96,.06)',fill:true,tension:.3,borderWidth:2.5,pointRadius:0,borderDash:[6,3]},
+    {label:moveLabel(false),data:rows.map(r=>Math.round(r.nw)),borderColor:'#27AE60',backgroundColor:'rgba(39,174,96,.06)',fill:true,tension:.3,borderWidth:2.5,pointRadius:0,borderDash:[6,3]},
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${$f(c.raw)}`}}},
     scales:{y:{ticks:{callback:v=>$m(v)},grid:{color:'rgba(0,0,0,.05)'}},x:{ticks:{maxRotation:45,autoSkip:true,maxTicksLimit:14},grid:{display:false}}}}});
-  mkLeg('ds-leg',[{c:'#2E86DE',l:'Stay put'},{c:'#27AE60',l:gd('newVal')>0?'Sell & downsize':'Sell home'}]);
+  mkLeg('ds-leg',[{c:'#2E86DE',l:'Stay put'},{c:'#27AE60',l:moveLabel(false)}]);
 }
 
 // ── Year-by-Year budget table ─────────────────────────────────
@@ -2849,8 +2886,8 @@ function drawPlanClean(rows){
   rows=rows||window._lastSimRows||[];
   if(!rows.length) return; startYr=ga('startYr'), endYr=ga('endYr');
   const retireYr=ga('retireYr');
-  document.getElementById('pc-title').textContent='Retirement Plan Summary — '+(gd('newVal')>0?'Sell & Downsize':'Sell Home');
-  document.getElementById('pc-subtitle').textContent=`${startYr}–${endYr}  ·  Sell & downsize scenario`;
+  document.getElementById('pc-title').textContent='Retirement Plan Summary — '+moveLabel(true);
+  document.getElementById('pc-subtitle').textContent=`${startYr}–${endYr}  ·  ${moveLabel(true)} scenario`;
 
   // Build goals/notes block from key assumptions
   const saleYr=gd('saleYr'), currentVal=gd('currentVal'), newVal=gd('newVal');
@@ -3657,6 +3694,7 @@ function drawRoth(){
   // conversion tax against each year's available cash from the base sim.
   const cashReserve=ga('reserve')||0;
   let cumConvTaxRoth=0;
+  let iraFundedTaxTotal=0;
   let conversionsHalted=false;
 
   allYears.forEach(yr=>{
@@ -3760,27 +3798,37 @@ function drawRoth(){
         actualConv=Math.min(headroomDisplay,iraConv);
       }
 
-      // Cap the conversion so its tax is fully payable from CASH without dipping below the
-      // reserve. Cash available for tax this year = base-sim cash − reserve − tax already
-      // committed in prior conversion years. If that's ~0, stop converting from here on.
+      // Conversion tax is paid from CASH above the reserve first. Whatever cash can't cover
+      // is paid from the IRA instead of halting conversions. Money pulled from the IRA to pay
+      // tax is itself taxable, so that withdrawal is grossed up by 1/(1-rate). This is less
+      // efficient than paying from cash — it shrinks the balance being converted — but it
+      // keeps the conversion window open for plans that run cash at the reserve floor.
       const baseCashThisYr=Math.max(0,(simRow?.cash)||0);
       const cashAvailForTax=Math.max(0, baseCashThisYr - cashReserve - cumConvTaxRoth);
-      const maxConvByCash=convTaxRate>0?(cashAvailForTax/convTaxRate):actualConv;
-      if(maxConvByCash<actualConv){
-        actualConv=Math.max(0,maxConvByCash);
-        // Cash can no longer fund a full bracket-fill conversion → halt further conversions.
-        conversionsHalted=true;
+      // Cap the conversion so the IRA can actually fund the converted amount plus any
+      // IRA-paid tax on it, without going negative.
+      if(convTaxRate>0 && convTaxRate<1){
+        const taxIfFull=actualConv*convTaxRate;
+        const iraPaidTax=Math.max(0,taxIfFull-cashAvailForTax);
+        const grossedUp=iraPaidTax/(1-convTaxRate);
+        if(actualConv+grossedUp>iraConv){
+          // Solve the largest conversion whose amount + grossed-up IRA-paid tax fits the balance.
+          const perDollar=1+(convTaxRate/(1-convTaxRate));
+          actualConv=Math.max(0,Math.min(actualConv,(iraConv+cashAvailForTax/(1-convTaxRate))/perDollar));
+        }
       }
 
       if(actualConv>0){
-        iraConv=Math.max(0,iraConv-actualConv);
-        // Full converted amount lands in the Roth. Conversion tax is paid from cash down to
-        // the reserve floor (tracked in totalTaxWithConv and cumConvTaxRoth below).
-        rothConv+=actualConv;
         convTaxYr=actualConv*convTaxRate;
+        const cashPaid=Math.min(convTaxYr,cashAvailForTax);
+        const iraPaid=Math.max(0,convTaxYr-cashPaid);
+        const iraTaxDraw=(convTaxRate<1)?iraPaid/(1-convTaxRate):iraPaid;
+        iraConv=Math.max(0,iraConv-actualConv-iraTaxDraw);
+        rothConv+=actualConv;
         totalTaxWithConv+=convTaxYr;
         totalConvCost+=convTaxYr;
-        cumConvTaxRoth+=convTaxYr;
+        cumConvTaxRoth+=cashPaid; // only cash-funded tax reduces future cash headroom
+        iraFundedTaxTotal+=iraPaid;
       }
 
       // Step 2: Display taxable income using POST-conversion balances (what actually happens)
@@ -3877,7 +3925,7 @@ function drawRoth(){
 
   // KPIs
   document.getElementById('roth-kpis').innerHTML=[
-    {l:'Total converted',v:$m(totalConverted),s:`Over ${convYearsCount} years · fill to ${bracketLabel} bracket`,c:'acc'},
+    {l:'Total converted',v:$m(totalConverted),s:`Over ${convYearsCount} year${convYearsCount!==1?'s':''} · fill to ${bracketLabel} bracket`,c:'acc'},
     {l:'Tax paid on conversions',v:$m(totalConvCost),s:`Upfront cost · at your ${Math.round(convTaxRate*100)}% rate now`,c:'amb'},
     {l:'Lifetime tax WITHOUT converting',v:$m(lifetimeTaxWithout),s:'All IRA draws + RMDs taxed at your retired rate',c:'bad'},
     {l:'Lifetime tax WITH converting',v:$m(lifetimeTaxWithConv),s:'Includes conversion cost · Roth draws are tax-free',c:lifetimeTaxWithConv<lifetimeTaxWithout?'good':'bad'},
@@ -3963,11 +4011,11 @@ function drawRoth(){
   const lbls=allYears.map(y=>y.toString());
   if(ch.rothIRA)ch.rothIRA.destroy();
   ch.rothIRA=new Chart(document.getElementById('cRothIRA'),{type:'line',data:{labels:lbls,datasets:[
-    {label:'Without conversions',data:noConvData.map(d=>d.total),borderColor:'#EF4444',fill:false,tension:.3,borderWidth:2,pointRadius:0,borderDash:[5,3]},
-    {label:'IRA + Roth (with conversions)',data:convData.map(d=>d.total),borderColor:'#6366F1',backgroundColor:'rgba(99,102,241,.07)',fill:true,tension:.3,borderWidth:2.5,pointRadius:0},
-    {label:'Roth portion',data:convData.map(d=>d.roth),borderColor:'#10B981',fill:false,tension:.3,borderWidth:1.5,pointRadius:0,borderDash:[3,3]},
+    {label:'Without conversions',data:noConvData.map(d=>Math.max(0,d.total)),borderColor:'#EF4444',fill:false,tension:.3,borderWidth:2,pointRadius:0,borderDash:[5,3]},
+    {label:'IRA + Roth (with conversions)',data:convData.map(d=>Math.max(0,d.total)),borderColor:'#6366F1',backgroundColor:'rgba(99,102,241,.07)',fill:true,tension:.3,borderWidth:2.5,pointRadius:0},
+    {label:'Roth portion',data:convData.map(d=>Math.max(0,d.roth)),borderColor:'#10B981',fill:false,tension:.3,borderWidth:1.5,pointRadius:0,borderDash:[3,3]},
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${$f(c.raw)}`}}},
-    scales:{y:{ticks:{callback:v=>$m(v)},grid:{color:'rgba(0,0,0,.05)'}},x:{grid:{display:false},ticks:{maxRotation:45,autoSkip:true,maxTicksLimit:12}}}}});
+    scales:{y:{beginAtZero:true,min:0,ticks:{callback:v=>$m(v)},grid:{color:'rgba(0,0,0,.05)'}},x:{grid:{display:false},ticks:{maxRotation:45,autoSkip:true,maxTicksLimit:12}}}}});
   mkLeg('roth-leg1',[{c:'#EF4444',l:'Without conversions'},{c:'#6366F1',l:'IRA + Roth total'},{c:'#10B981',l:'Roth portion'}]);
 
   if(ch.rothTax)ch.rothTax.destroy();
@@ -3993,7 +4041,7 @@ function drawRoth(){
     let html='';
     if(convYears.length>0){
       const firstY=convYears[0].yr, lastY=convYears[convYears.length-1].yr;
-      const haltNote=conversionsHalted?` Conversions stop after ${lastY} because your cash (above your reserve) is used up paying the conversion tax — the tool won't dip into your reserve to convert more.`:'';
+      const haltNote=iraFundedTaxTotal>100?` Your cash above the reserve didn't cover all of the conversion tax, so ${$m(Math.round(iraFundedTaxTotal))} of it was paid from the IRA itself. That withdrawal is taxable too, so it's grossed up — paying conversion tax from the IRA is less efficient than paying it from cash, and it reduces the balance left to convert.`:'';
       html=`<div style="padding:10px 14px;background:#ECFDF5;border:1px solid #A7F3D0;border-radius:9px;font-size:12px;color:#065F46;line-height:1.55">
         ✅ <strong>Converting ${convYears.length} year${convYears.length>1?'s':''}: ${firstY}–${lastY}</strong> (${periodTxt}). Total moved to Roth: <strong>${$m(totalConv)}</strong>, with about <strong>${$m(totalTax)}</strong> in conversion tax paid from cash along the way.${haltNote}</div>`;
     } else {
@@ -4098,8 +4146,17 @@ function resetAll(){
   Object.keys(DS_DEFS).forEach(k=>{const e=document.getElementById('ds-'+k);if(e)e.value=DS_DEFS[k]||0;});
   Object.keys(ovr).forEach(k=>delete ovr[k]);
   nwAssets=[];nwDebts=[];
+  // These all persisted through a reset before, so a "cleared" plan kept running against the
+  // previous plan's budget, income streams and one-time expenses.
+  otherIncomes=[];
+  majorExpenses=[];
+  window._budgetPhases=null;
+  window._applyHomeSale=true;
   initMBData();
-  renderNWLists();saveState();recalc();
+  try{renderBudgetPhases();}catch(e){}
+  renderNWLists();renderOtherIncome();renderMajorExpenses();
+  try{dismissSampleBanner();}catch(e){}
+  saveState();recalc();
 }
 
 function clearAllData(){
@@ -4126,7 +4183,7 @@ const SAMPLE_PLAN = {
     birthYr:1981, birthYr2:1983, startYr:2026, endYr:2076, retireYr:2041, retireYr2:2041,
     salary:125000, salGrow:3, bonus:5,
     salary2:75000, salGrow2:3, bonus2:3,
-    ssYou:3500, ssSpouse:2400, ssCola:2.5, ssYouStart:0, ssSpouseStart:0,
+    ssYou:3500, ssSpouse:2400, ssCola:2.5, ssYouStart:2048, ssSpouseStart:2050,
     cash0:85000, reserve:40000, cashR:1,
     ira0:450000, iraContrib:7000, k401Contrib:15000, iraR:5.5,
     ira0Spouse:200000, iraContribSpouse:7000, k401ContribSpouse:8000,
@@ -4136,7 +4193,7 @@ const SAMPLE_PLAN = {
     currentVal:650000, currentR:3, mortgage:250000, mortgageR:5.5, mortgagePmt:1420,
     saleYr:2040, sellingCost:6, newVal:400000
   },
-  budgetPhases: [{start:2026, end:2040, amount:9500}, {start:2041, end:2076, amount:7500}],
+  budgetPhases: [{start:2026, end:2040, amount:13000}, {start:2041, end:2076, amount:10400}],
   majorExpenses: [
     {year:2034, amount:18000, description:'New roof', source:'cash'},
     {year:2043, amount:35000, description:'Replacement car', source:'ira'}
@@ -4447,23 +4504,26 @@ function drawRMD(){
     document.getElementById('rmd-tbl').innerHTML='';return;
   }
   const years=Array.from({length:endYr-startYr+1},(_,i)=>startYr+i);
-  let bal=ira0;
   const rmdRows=[],noRMDBals=[],withRMDBals=[];
-  let noRMDBal=ira0;
-
+  // Anchor to the real plan projection so balances and RMD amounts match Year-by-Year,
+  // Plan Summary and My Timeline. The main simulation already applies IRS divisors and
+  // subtracts the withdrawals you actually live on.
+  const simRowsRMD=window._lastSimRows||[];
+  // "Without RMDs" shows what the IRA would hold if forced RMD dollars had stayed invested
+  // instead of being withdrawn — the withdrawn money isn't lost, it moves to cash.
+  let sidelined=0;
   years.forEach(yr=>{
     const age=yr-birthYr;
-    bal=bal*(1+iraR);
-    noRMDBal=noRMDBal*(1+iraR);
-    let rmd=0;
-    if(age>=hhStartAge){
-      const div=RMD_TABLE[Math.min(age,100)]||6.4;
-      rmd=bal/div;
-      bal=Math.max(0,bal-rmd);
-    }
+    const row=simRowsRMD.find(r=>r.yr===yr);
+    const bal=row?Math.max(0,row.ira||0):0;
+    const rmd=row?Math.max(0,row.rmd||0):0;
+    sidelined=sidelined*(1+iraR)+rmd;
     withRMDBals.push(Math.round(bal));
-    noRMDBals.push(Math.round(noRMDBal));
-    if(age>=hhStartAge)rmdRows.push({yr,age,bal:bal+rmd,div:RMD_TABLE[Math.min(age,100)]||6.4,rmd,tax:rmd*taxR,net:rmd*(1-taxR)});
+    noRMDBals.push(Math.round(bal+sidelined));
+    if(rmd>0){
+      rmdRows.push({yr,age,bal:bal+rmd,div:RMD_TABLE[Math.min(age,100)]||6.4,
+        rmd,tax:rmd*taxR,net:rmd*(1-taxR)});
+    }
   });
 
   if(!rmdRows.length){const _ra=hhStartAge;document.getElementById('rmd-kpis').innerHTML=`<div class="kcard" style="grid-column:1/-1"><div class="kl">RMD Status</div><div class="kv good">RMDs not yet started</div><div class="ks">Begin at age ${_ra} — ${_ra+birthYr}</div></div>`;return;}
@@ -4483,7 +4543,7 @@ function drawRMD(){
   window._ch.rmdBar=new Chart(document.getElementById('cRMDBar'),{type:'bar',data:{labels:rmdRows.map(r=>r.yr.toString()),datasets:[{label:'RMD Amount',data:rmdRows.map(r=>Math.round(r.rmd)),backgroundColor:'#F59E0B'},{label:'Tax on RMD',data:rmdRows.map(r=>Math.round(r.tax)),backgroundColor:'#EF4444'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${$f(c.raw)}`}}},scales:{x:{stacked:false,grid:{display:false},ticks:{maxRotation:45,autoSkip:true,maxTicksLimit:14}},y:{ticks:{callback:v=>$m(v)},grid:{color:'rgba(0,0,0,.05)'}}}}});
   if(window._ch.rmdLine)window._ch.rmdLine.destroy();
   window._ch.rmdLine=new Chart(document.getElementById('cRMDLine'),{type:'line',data:{labels:lbls,datasets:[{label:'With RMDs',data:withRMDBals,borderColor:'#EF4444',fill:false,tension:.3,borderWidth:2,pointRadius:0},{label:'No RMDs (Roth)',data:noRMDBals,borderColor:'#10B981',fill:false,tension:.3,borderWidth:2,pointRadius:0,borderDash:[6,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${$f(c.raw)}`}}},scales:{y:{ticks:{callback:v=>$m(v)},grid:{color:'rgba(0,0,0,.05)'}},x:{grid:{display:false},ticks:{maxRotation:45,autoSkip:true,maxTicksLimit:14}}}}});
-  mkLeg('rmd-leg',[{c:'#EF4444',l:'IRA with RMDs'},{c:'#10B981',l:'Roth (no RMDs)'}]);
+  mkLeg('rmd-leg',[{c:'#EF4444',l:'IRA (RMDs withdrawn)'},{c:'#10B981',l:'If RMD dollars stayed invested'}]);
 
   document.getElementById('rmd-tbl').innerHTML=`<thead><tr style="background:#1B2A4A"><th style="text-align:center">Year</th><th style="text-align:center">Age</th><th>IRA Balance (start of yr)</th><th>Divisor</th><th>RMD Required</th><th>Tax (${ga('taxR')}%)</th><th>Net After Tax</th></tr></thead><tbody>${rmdRows.map(r=>`<tr style="background:#FFFBEB;border-bottom:1px solid #FEF3C7"><td style="text-align:center"><strong>${r.yr}</strong></td><td style="text-align:center">${r.age}</td><td>${$f(r.bal)}</td><td style="text-align:center">${r.div.toFixed(1)}</td><td style="color:#F59E0B;font-weight:700">${$f(r.rmd)}</td><td style="color:#EF4444">${$f(r.tax)}</td><td style="color:#10B981">${$f(r.net)}</td></tr>`).join('')}</tbody>`;
 }
@@ -4492,13 +4552,25 @@ function drawRMD(){
 
 // ── Sequence of Returns Risk Tab ───────────────────────────────
 function drawSequence(){
-  const ira0=ga('ira0'),iraR=ga('iraR')/100,startYr=ga('startYr'),endYr=ga('endYr'),retireYr=ga('retireYr');
+  const ira0=ga('ira0')+ga('ira0Spouse'),iraR=ga('iraR')/100,startYr=ga('startYr'),endYr=ga('endYr'),retireYr=ga('retireYr');
+  // Household annual retirement contributions (added during working years, as in the main sim)
+  const seqContrib=ga('iraContrib')+ga('k401Contrib')+ga('iraContribSpouse')+ga('k401ContribSpouse');
   if(!ira0){
     document.getElementById('seq-alerts').innerHTML=`<div class="alert ai"><i class="fa-solid fa-circle-info" style="font-size:14px;flex-shrink:0"></i><span>Enter your IRA balance in the My Plan Inputs tab to see sequence of returns risk analysis.</span></div>`;
     return;
   }
   const drop=+(document.getElementById('seq-drop')?.value||35)/100;
   const recoveryYrs=+(document.getElementById('seq-recovery')?.value||3);
+  // Recovery rate: the annual return that brings the portfolio back to the trajectory it
+  // would have been on had the crash not happened, over the recovery period the user set.
+  // Solve (1+rec)^N = (1+iraR)^N / (1-drop). After the recovery window, returns revert to normal.
+  // This models a real market rebound — the lasting damage in sequence risk comes from
+  // withdrawing during the drawdown, not from the market never recovering.
+  const recoveryRate=(recoveryYrs>0&&drop>0&&drop<1)
+    ? Math.pow(Math.pow(1+iraR,recoveryYrs)/(1-drop), 1/recoveryYrs)-1
+    : iraR;
+  { const n=document.getElementById('seq-recovery-note');
+    if(n) n.innerHTML=`The portfolio returns <strong>${(recoveryRate*100).toFixed(1)}%</strong> per year for ${recoveryYrs} year${recoveryYrs>1?'s':''} after the crash — enough to get back to where it would have been — then reverts to your ${(iraR*100).toFixed(1)}% assumption. The lasting damage comes from withdrawing money while the balance is down, not from the market failing to recover.`; }
   // Custom crash years with fallbacks
   const crashYr1=+(document.getElementById('seq-yr1')?.value||0)||retireYr;
   const crashYr2=+(document.getElementById('seq-yr2')?.value||0)||(retireYr+10);
@@ -4506,33 +4578,38 @@ function drawSequence(){
   const years=Array.from({length:endYr-startYr+1},(_,i)=>startYr+i);
   const simRows=window._lastSimRows||[];
 
-  // Get annual draw amount from sim rows (IRA draws after retirement)
+  // Get the annual amount the plan NEEDS from the portfolio in a given year.
+  // This is the actual IRA draw plus any uncovered shortfall — in years where the base plan
+  // ran dry, idraw is 0 only because there was nothing left, not because nothing was needed.
+  // Including the shortfall keeps the stress test honest when the base plan already fails.
   function getAnnualDraw(yr){
     const row=simRows.find(r=>r.yr===yr);
-    return row?Math.max(0,row.idraw||0):0;
+    return row?Math.max(0,(row.idraw||0)+(row.unc||0)):0;
   }
 
-  // Run a proper year-by-year simulation
+  // Run a scenario anchored to the REAL plan projection.
+  // Before the crash year the balance is exactly what Year-by-Year and Plan Summary show.
+  // At the crash year that balance drops, then we project forward from there.
   function runScenario(crashYr){
-    let bal=ira0;
+    let bal=0;
     return years.map(yr=>{
-      if(yr===crashYr){bal=Math.max(0,bal*(1-drop));}
-      const r=(yr>crashYr&&yr<=crashYr+recoveryYrs)?(iraR*1.15):iraR;
+      const row=simRows.find(r=>r.yr===yr);
+      const planIra=row?Math.max(0,row.ira||0):0;
+      if(yr<crashYr){ bal=planIra; return Math.round(bal); }
+      if(yr===crashYr){ bal=planIra*(1-drop); return Math.round(bal); }
+      const r=(yr<=crashYr+recoveryYrs)?recoveryRate:iraR;
       bal=Math.max(0,bal*(1+r));
-      const draw=yr>=retireYr?getAnnualDraw(yr):0;
-      bal=Math.max(0,bal-draw);
+      if(yr<retireYr) bal+=seqContrib;
+      if(yr>=retireYr) bal=Math.max(0,bal-getAnnualDraw(yr));
       return Math.round(bal);
     });
   }
 
-  // Base case — no crash, normal returns
+  // Base case — the plan's own IRA path, straight from the simulation.
   function runBaseCase(){
-    let bal=ira0;
     return years.map(yr=>{
-      bal=Math.max(0,bal*(1+iraR));
-      const draw=yr>=retireYr?getAnnualDraw(yr):0;
-      bal=Math.max(0,bal-draw);
-      return Math.round(bal);
+      const row=simRows.find(r=>r.yr===yr);
+      return Math.round(row?Math.max(0,row.ira||0):0);
     });
   }
 
@@ -4552,19 +4629,31 @@ function drawSequence(){
 
   // Alert
   const fails=crashScenarios.filter(s=>s.data[s.data.length-1]<=0);
-  document.getElementById('seq-alerts').innerHTML=fails.length
-    ?`<div class="alert ab"><i class="fa-solid fa-circle-xmark" style="font-size:14px;flex-shrink:0"></i><span><strong>${fails.length} scenario${fails.length>1?'s':''} deplete your IRA.</strong> A ${Math.round(drop*100)}% crash early in retirement is the most damaging. Keep 2–3 years of expenses in cash as a buffer before retiring.</span></div>`
-    :`<div class="alert ag"><i class="fa-solid fa-circle-check" style="font-size:14px;flex-shrink:0"></i><span><strong>Your plan survives all three crash scenarios.</strong> Even a ${Math.round(drop*100)}% market crash does not deplete your IRA. Your retirement is resilient.</span></div>`;
+  const baseDepAlert=findDepletionAge(baseCase); // hoisted below; null when base case survives
+  const seqScopeNote=`<strong>This test looks at your IRA only</strong> — it does not count cash, brokerage, or other savings. Check My Timeline for the full picture.`;
+  document.getElementById('seq-alerts').innerHTML=baseDepAlert
+    ?`<div class="alert aw"><i class="fa-solid fa-triangle-exclamation" style="font-size:14px;flex-shrink:0"></i><span><strong>Your IRA runs out at age ${baseDepAlert.age} (${baseDepAlert.yr}) even with no crash at all.</strong> Worth addressing that before stress-testing crashes — a market drop makes it happen sooner, not different. ${seqScopeNote}</span></div>`
+    :fails.length
+    ?(()=>{
+      // "Most damaging" = runs out earliest. End balances are often all zero, so compare
+      // depletion year first and fall back to end balance only when those match.
+      const scored=fails.map(s=>{const dep=findDepletionAge(s.data);
+        return {s,depYr:dep?dep.yr:Infinity,end:s.data[s.data.length-1]};});
+      const worst=scored.reduce((a,b)=>(a.depYr!==b.depYr?(a.depYr<b.depYr?a:b):(a.end<=b.end?a:b)));
+      // If every one of them only hits zero in the final year, the money lasted the plan —
+      // that's a margin warning, not a failure, and the wording has to match the rows below.
+      const allAtFinish=scored.every(x=>x.depYr>=endYr);
+      if(allAtFinish){
+        return `<div class="alert aw"><i class="fa-solid fa-triangle-exclamation" style="font-size:14px;flex-shrink:0"></i><span>In ${fails.length} of these scenario${fails.length>1?'s':''}, <strong>your IRA lasts the full plan but ends at zero</strong> — no margin left. ${seqScopeNote}</span></div>`;
+      }
+      return `<div class="alert aw"><i class="fa-solid fa-triangle-exclamation" style="font-size:14px;flex-shrink:0"></i><span>In ${fails.length} of these scenario${fails.length>1?'s':''}, <strong>your IRA is exhausted before the end of your plan.</strong> The ${worst.s.name.toLowerCase()} (${worst.s.year}) runs out earliest. ${seqScopeNote}</span></div>`;})()
+    :`<div class="alert ag"><i class="fa-solid fa-circle-check" style="font-size:14px;flex-shrink:0"></i><span><strong>Your IRA survives all three crash scenarios.</strong> Even a ${Math.round(drop*100)}% market crash does not exhaust it — and that is before counting cash or other savings.</span></div>`;
 
-  // Chart — IRA before crash, immediately after drop, and at plan end
+  // Chart — IRA before crash, immediately after drop, and at plan end.
+  // "Before crash" reads the plan's own projection so it matches Year-by-Year and Plan Summary.
   function iraAtYear(targetYr){
-    let bal=ira0;
-    for(const yr of years){
-      if(yr>targetYr)break;
-      bal=Math.max(0,bal*(1+iraR));
-      if(yr>=retireYr)bal=Math.max(0,bal-getAnnualDraw(yr));
-    }
-    return bal;
+    const row=simRows.find(r=>r.yr===targetYr);
+    return row?Math.max(0,row.ira||0):0;
   }
 
   const beforeCrash=crashScenarios.map(s=>Math.round(iraAtYear(s.year-1)));
@@ -4623,13 +4712,16 @@ function drawSequence(){
   // Re-run a scenario with all retirement IRA draws scaled by `factor`, return true if it
   // lasts to plan end. Then binary-search the smallest cut needed.
   function survivesWithFactor(crashYr, factor){
-    let bal=ira0;
+    let bal=0;
     for(const yr of years){
-      if(yr===crashYr) bal=Math.max(0,bal*(1-drop));
-      const r=(yr>crashYr&&yr<=crashYr+recoveryYrs)?(iraR*1.15):iraR;
+      const row=simRows.find(r=>r.yr===yr);
+      const planIra=row?Math.max(0,row.ira||0):0;
+      if(yr<crashYr){ bal=planIra; continue; }
+      if(yr===crashYr){ bal=planIra*(1-drop); if(bal<0) return false; continue; }
+      const r=(yr<=crashYr+recoveryYrs)?recoveryRate:iraR;
       bal=Math.max(0,bal*(1+r));
-      const draw=yr>=retireYr?getAnnualDraw(yr)*factor:0;
-      bal=bal-draw;
+      if(yr<retireYr) bal+=seqContrib;
+      if(yr>=retireYr) bal=bal-getAnnualDraw(yr)*factor;
       if(bal<0) return false; // ran out before plan end
     }
     return true;
@@ -4662,23 +4754,33 @@ function drawSequence(){
   // The monthly retirement spend the plan currently assumes in a given year (incl. healthcare),
   // taken from the actual simulation row when available, else the budget phase.
   function spendMonthlyForYear(yr){
-    const row=simRows.find(r=>r.yr===yr&&r.expenses>0);
-    if(row) return Math.round((row.expenses||0)/12);
+    // Use recurring spending only — a year with a one-time cost (home purchase, new roof)
+    // must not be read as that being the ongoing monthly budget.
+    const row=simRows.find(r=>r.yr===yr&&(r.recurringExp!==undefined?r.recurringExp:r.expenses)>0);
+    if(row) return Math.round(((row.recurringExp!==undefined?row.recurringExp:row.expenses)||0)/12);
     return phaseForYear(yr).monthly;
   }
 
   const impactRows=crashScenarios.map(s=>{
     const dep=findDepletionAge(s.data);
     const baseDep=baseDepletion;
+    // Hitting zero in the final year means the money lasted the whole plan with nothing to
+    // spare — that's a margin warning, not a failure, and shouldn't read as "exhausted".
+    const atFinishLine = dep && dep.yr>=endYr;
     let impact='';
     let impactColor='#10B981';
-    if(dep&&!baseDep){
+    if(atFinishLine){
+      impact=`Lasts the full plan, but ends at zero in ${dep.yr} (age ${dep.age}) — no margin left`;
+      impactColor='#F59E0B';
+    } else if(dep&&!baseDep){
       // Base case survives but crash depletes
       impact=`Depletes at age ${dep.age} (${dep.yr}) — base case never depletes`;
       impactColor='#EF4444';
     } else if(dep&&baseDep){
       const yrsDiff=baseDep.yr-dep.yr;
-      impact=`Depletes ${yrsDiff} year${yrsDiff!==1?'s':''} earlier — age ${dep.age} vs age ${baseDep.age}`;
+      impact=yrsDiff===0
+        ?`Depletes at age ${dep.age} — same as the base case, so the crash isn't what breaks it`
+        :`Depletes ${yrsDiff} year${yrsDiff!==1?'s':''} earlier — age ${dep.age} vs age ${baseDep.age}`;
       impactColor='#EF4444';
     } else if(!dep&&!baseDep){
       // Both survive — compare end balances
@@ -4692,7 +4794,7 @@ function drawSequence(){
       impact=`Survives to age ${baseFinalAge} · No depletion`;
       impactColor='#10B981';
     }
-    return{...s,dep,impact,impactColor};
+    return{...s,dep,atFinishLine,impact,impactColor};
   });
 
   // Attach the spending-correction solution to each scenario, anchored to the budget phase
@@ -4723,7 +4825,10 @@ function drawSequence(){
       s.fix={type:'ok'};
     } else {
       const periods=affectedPeriods(s.year,factor);
-      s.fix={type:'cut',cutPct:Math.round((1-factor)*100),periods,
+      // Keep at least one significant figure — a fix that rounds to "0%" reads as nonsense
+      // next to the dollar figures showing an actual cut.
+      const _rawPct=(1-factor)*100;
+      s.fix={type:'cut',cutPct:_rawPct>0&&_rawPct<1?_rawPct.toFixed(1):Math.round(_rawPct),periods,
         crashAge:s.year-(ga('birthYr')||1960)};
     }
   });
@@ -4751,9 +4856,11 @@ function drawSequence(){
           <div style="font-size:10px;color:#64748B">End IRA: ${$m(s.data[s.data.length-1])}</div>
         </div>
         <div style="font-size:12px;color:${s.impactColor};font-weight:600;line-height:1.5">
-          ${s.dep
-            ?`<span style="background:#FEE2E2;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;color:#7F1D1D;margin-right:6px">⚠ DEPLETES</span>`
-            :`<span style="background:#DCFCE7;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;color:#14532D;margin-right:6px">✓ SURVIVES</span>`}
+          ${s.atFinishLine
+            ?`<span style="background:#FEF3C7;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;color:#92400E;margin-right:6px">⚠ NO MARGIN</span>`
+            :s.dep
+            ?`<span style="background:#FEE2E2;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;color:#7F1D1D;margin-right:6px">⚠ IRA EXHAUSTED</span>`
+            :`<span style="background:#DCFCE7;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;color:#14532D;margin-right:6px">✓ IRA SURVIVES</span>`}
           ${s.impact}
           ${s.fix.type==='cut'
             ?`<div style="margin-top:8px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:8px 11px;font-weight:500;color:#92400E;font-size:11.5px;line-height:1.5">
@@ -4769,7 +4876,7 @@ function drawSequence(){
               </div>`
             :s.fix.type==='severe'
             ?`<div style="margin-top:8px;background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:8px 11px;font-weight:500;color:#991B1B;font-size:11.5px;line-height:1.5">
-                <strong>The fix:</strong> a crash this size can't be solved by spending cuts alone — you'd also want a cash buffer (2–3 years of expenses) and/or to delay retirement a year or two.
+                <strong>What to consider:</strong> a crash this size is hard to absorb with spending cuts alone. A cash buffer (2–3 years of expenses) and/or delaying retirement a year or two both help. Remember this test draws from your IRA only — cash and other savings you hold would cushion the early years.
               </div>`
             :`<div style="margin-top:8px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:8px 11px;font-weight:500;color:#166534;font-size:11.5px;line-height:1.5">
                 <strong>No correction needed</strong> — your current spending plan already absorbs this crash.
