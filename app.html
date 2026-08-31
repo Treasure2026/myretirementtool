@@ -4983,6 +4983,7 @@ function showTierLock(panel){
         <a href="${TIER_CONFIG.COMPLETE_UPGRADE_URL}" target="_blank" style="background:#3B82F6;color:#fff;border:none;border-radius:8px;padding:12px 22px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px">Upgrade for ${TIER_CONFIG.COMPLETE_UPGRADE_PRICE}</a>
       </div>
       <div style="text-align:center;font-size:10px;color:#94A3B8;margin-top:8px">One-time upgrade — no subscription. You'll receive a new key that unlocks all three tabs.</div>
+      <div style="text-align:center;font-size:11px;color:#64748B;margin-top:10px;padding-top:10px;border-top:1px solid #E2E8F0">Already upgraded? <a href="#" onclick="if(confirm('Enter your new Complete license key?\n\nThis signs you out so you can enter it. Your plan data is not affected.'))lgLogout();return false;" style="color:#3B82F6;font-weight:700">Enter your new key</a></div>
     </div>
   `;
 }
@@ -5475,7 +5476,7 @@ function lgFmt(el){ el.value=el.value.replace(/\s+/g,'').trim(); }
 
 function lgStore(o){ try{localStorage.setItem('_lic',JSON.stringify(o));}catch(e){} }
 function lgLoad(){ try{return JSON.parse(localStorage.getItem('_lic')||'null');}catch(e){return null;} }
-function lgClearStore(){ try{localStorage.removeItem('_lic');localStorage.removeItem('_ld');}catch(e){} }
+function lgClearStore(){ try{localStorage.removeItem('_lic');localStorage.removeItem('_ld');localStorage.removeItem('nrp-tier');}catch(e){} }
 
 // First-time activation: POST /activate with key + an instance name (this device).
 async function lgActivate(key, email){
