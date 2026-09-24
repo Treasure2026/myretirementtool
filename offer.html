@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Retirement Tool — Launch offer, $29.99 one-time</title>
+<meta name="description" content="A clear, honest retirement planning tool. See when you can retire, how much you can safely spend, and how long your money lasts. One-time payment of $29.99 during the launch offer — less than a single year of the subscription tools.">
+<style>
+  :root{
+    --navy:#1B2A4A; --navy2:#243557; --blue:#2E86DE; --grn:#27AE60; --amber:#F39C12;
+    --ink:#1a1a2e; --muted:#64748B; --line:#CBD5E1; --bg:#F0F4F8; --surf:#fff; --surf2:#F8FAFC;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  a{color:var(--blue);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* Top bar */
+  .topbar{background:var(--navy);color:#fff;padding:13px 0}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{font-size:17px;font-weight:800;letter-spacing:.2px;display:flex;align-items:center;gap:9px;color:#fff}
+  .brand .dot{width:11px;height:11px;border-radius:3px;background:var(--blue);display:inline-block}
+  .topbar nav a{color:#C7D6EC;font-size:13px;font-weight:600;margin-left:20px}
+  .topbar nav a:hover{color:#fff;text-decoration:none}
+  .topbar .buy{background:var(--blue);color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;margin-left:22px}
+  .topbar .buy:hover{background:#2476c9;text-decoration:none}
+
+  /* Hero */
+  .hero{background:linear-gradient(160deg,var(--navy) 0%,#16223D 100%);color:#fff;padding:64px 0 72px;position:relative;overflow:hidden}
+  .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;position:relative;z-index:2}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7FB2EC;margin-bottom:16px}
+  .hero h1{font-size:42px;line-height:1.12;font-weight:800;letter-spacing:-.5px;margin-bottom:18px}
+  .hero h1 em{font-style:normal;color:#86C2FF}
+  .hero p.sub{font-size:17px;color:#C7D6EC;max-width:520px;margin-bottom:28px}
+  .cta-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .btn-primary{background:var(--blue);color:#fff;padding:14px 26px;border-radius:10px;font-size:16px;font-weight:700;display:inline-flex;align-items:center;gap:9px;box-shadow:0 6px 20px rgba(46,134,222,.35);transition:transform .12s,box-shadow .12s}
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(46,134,222,.45);text-decoration:none}
+  .price-tag{font-size:14px;color:#9DB6D6}
+  .price-tag b{color:#fff;font-size:15px}
+  .trust-line{margin-top:22px;font-size:13px;color:#EAF1FB;display:flex;gap:18px;flex-wrap:wrap;font-weight:500}
+  .trust-line span{display:inline-flex;align-items:center;gap:6px}
+  .trust-line .ck{color:#4ADE80;font-weight:800}
+
+  /* Hero visual — a calm "runway" projection that echoes the tool */
+  .hero-card{background:#fff;border-radius:14px;padding:20px 20px 16px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+  .hero-card .hc-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+  .hc-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .hc-big{font-size:30px;font-weight:800;color:var(--navy);line-height:1.1}
+  .hc-sub{font-size:11px;color:var(--grn);font-weight:700;margin-bottom:12px}
+  .hc-chart{width:100%;height:128px;display:block}
+  .hc-legend{display:flex;gap:14px;margin-top:10px;font-size:10.5px;color:var(--muted)}
+  .hc-legend i{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:5px;vertical-align:middle}
+
+  /* Section scaffolding */
+  section{padding:62px 0}
+  .sec-eyebrow{font-size:12.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#1D6FD0;margin-bottom:10px;text-align:center}
+  .sec-title{font-size:30px;font-weight:800;letter-spacing:-.4px;color:var(--navy);text-align:center;margin-bottom:12px}
+  .sec-intro{font-size:16px;color:var(--muted);max-width:620px;margin:0 auto 40px;text-align:center}
+  .head-banner{background:linear-gradient(160deg,var(--navy),#16223D);border-radius:16px;padding:30px 24px;margin-bottom:38px}
+  .head-banner .sec-eyebrow{color:#7FB2EC;margin-bottom:8px}
+  .head-banner .sec-title{color:#fff;margin-bottom:10px}
+  .head-banner .sec-intro{color:#C7D6EC;margin-bottom:0}
+
+  /* Feature cards */
+  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .fcard{background:var(--surf);border:1px solid var(--line);border-radius:13px;padding:24px 22px;transition:border-color .15s,box-shadow .15s}
+  .fcard:hover{border-color:var(--blue);box-shadow:0 8px 24px rgba(27,42,74,.08)}
+  .fcard .ico{width:42px;height:42px;border-radius:10px;background:#EAF2FC;color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px}
+  .fcard h3{font-size:16px;font-weight:800;color:var(--navy);margin-bottom:7px}
+  .fcard p{font-size:13.5px;color:#475569}
+
+  /* Band */
+  .band{background:var(--navy);color:#fff}
+  .band .sec-title{color:#fff}
+  .band .sec-eyebrow{color:#7FB2EC}
+  .band .sec-intro{color:#B9C9E2}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;counter-reset:step}
+  .step{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:22px 18px}
+  .step .num{font-size:13px;font-weight:800;color:#86C2FF;margin-bottom:9px}
+  .step h4{font-size:14.5px;font-weight:700;margin-bottom:6px}
+  .step p{font-size:12.5px;color:#B9C9E2}
+
+  /* Pricing */
+  .pricing{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:920px;margin:0 auto;align-items:stretch}
+  .pcard{background:var(--surf);border:2px solid var(--line);border-radius:16px;padding:34px 32px;text-align:center;box-shadow:0 8px 24px rgba(27,42,74,.06);position:relative;display:flex;flex-direction:column}
+  .pcard.pcard-featured{border-color:var(--blue);box-shadow:0 14px 40px rgba(46,134,222,.18);transform:translateY(-4px)}
+  .pcard .pribbon{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:11px;font-weight:800;letter-spacing:.08em;padding:5px 14px;border-radius:20px;text-transform:uppercase;white-space:nowrap;box-shadow:0 4px 12px rgba(46,134,222,.3)}
+  .pcard .pname{font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);margin-bottom:8px}
+  .pcard .ptagline{font-size:13px;color:var(--muted);margin-bottom:14px;min-height:36px}
+  .pcard .pprice{font-size:44px;font-weight:800;color:var(--navy);line-height:1.05;white-space:nowrap}
+  .pcard .pprice span{font-size:17px;color:var(--muted);font-weight:600;white-space:nowrap}
+  .pcard .pnote{font-size:12.5px;color:var(--muted);margin:10px 0 20px}
+  .intro-badge{display:inline-block;background:#FEF3C7;color:#92400E;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:4px 11px;border-radius:20px;margin-bottom:12px;border:1px solid #FCD34D}
+  .price-was{font-size:16px;color:#94A3B8;font-weight:600;text-decoration:line-through;display:block;margin-bottom:4px}
+  .plist{text-align:left;margin:0 auto 24px;max-width:320px;flex:1}
+  .plist li{list-style:none;font-size:13.5px;color:#334155;padding:6px 0 6px 26px;position:relative;line-height:1.45}
+  .plist li::before{content:"✓";position:absolute;left:0;color:var(--grn);font-weight:800}
+  .plist li.pli-plus{color:var(--navy);font-weight:700}
+  .plist li.pli-plus::before{content:"+";color:var(--blue)}
+  .pcard .btn-primary{width:100%;justify-content:center;font-size:16px;padding:14px}
+  .pcard .btn-secondary{width:100%;justify-content:center;font-size:16px;padding:14px;background:#fff;color:var(--blue);border:2px solid var(--blue);border-radius:10px;font-weight:700;display:inline-flex;align-items:center;gap:9px;transition:all .12s}
+  .pcard .btn-secondary:hover{background:var(--blue);color:#fff;text-decoration:none}
+  .pguarantee{font-size:12px;color:var(--muted);margin-top:14px}
+  .upgrade-note{background:#F0F9FF;border:1px solid #BAE6FD;border-radius:10px;padding:12px 16px;margin:24px auto 0;max-width:920px;text-align:center;font-size:12.5px;color:#075985}
+  @media(max-width:720px){
+    .pricing{grid-template-columns:1fr;max-width:440px}
+    .pcard.pcard-featured{transform:none}
+  }
+
+  /* Honesty / differentiator strip */
+  .honest{background:var(--surf2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .honest .wrap{max-width:760px;text-align:center}
+  .honest blockquote{font-size:21px;line-height:1.5;font-weight:600;color:var(--navy);margin-bottom:14px}
+  .honest blockquote b{color:var(--blue)}
+  .honest .src{font-size:13px;color:var(--muted)}
+
+  /* FAQ */
+  .faq{max-width:760px;margin:0 auto}
+  .qa{border-bottom:1px solid var(--line);padding:18px 0}
+  .qa h4{font-size:15.5px;font-weight:700;color:var(--navy);margin-bottom:6px}
+  .qa p{font-size:14px;color:#475569}
+
+  /* Footer */
+  footer{background:var(--navy);color:#9DB6D6;padding:40px 0 30px;font-size:13px}
+  footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-start}
+  footer .fbrand{color:#fff;font-weight:800;font-size:15px;margin-bottom:8px}
+  footer a{color:#9DB6D6}
+  footer a:hover{color:#fff}
+  footer .legal{font-size:11.5px;color:#6F87A8;margin-top:18px;max-width:560px;line-height:1.55}
+  .foot-links a{margin-left:18px}
+
+  /* Legal docs (privacy/terms) hidden panels */
+  .legal-doc{display:none;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:30px;margin-top:24px;font-size:13.5px;color:#475569}
+  .legal-doc:target{display:block}
+  .legal-doc h3{color:var(--navy);font-size:18px;margin-bottom:8px}
+
+  /* Tab mockup gallery */
+  .shots{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:8px}
+  .shot{background:var(--surf);border:1px solid var(--line);border-radius:13px;overflow:hidden;box-shadow:0 8px 24px rgba(27,42,74,.08);transition:transform .15s,box-shadow .15s}
+  .shot:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(27,42,74,.14)}
+  .shot-bar{background:var(--navy);padding:8px 12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .shot-bar .tab{font-size:10px;color:#9DB6D6;font-weight:600;padding:3px 8px;border-radius:5px}
+  .shot-bar .tab.on{background:var(--blue);color:#fff}
+  .shot img{width:100%;height:auto;display:block}
+  .shot-body{padding:15px}
+  .shot-tier{display:inline-block;background:#EFF6FF;color:#1D4ED8;border:1px solid #BFDBFE;border-radius:20px;padding:1px 9px;font-size:10.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;margin-left:6px;vertical-align:middle}
+  .shot-cap{padding:0 16px 16px;font-size:12.5px;color:#475569}
+  .shot-cap b{color:var(--navy)}
+  .m-kpi{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .m-big{font-size:22px;font-weight:800;color:var(--navy);line-height:1.1}
+  .m-grn{color:var(--grn);font-weight:700;font-size:10.5px}
+  .rwbar{display:flex;align-items:flex-end;gap:3px;height:78px;margin:12px 0 4px}
+  .rwbar i{flex:1;border-radius:2px 2px 0 0;display:block}
+  .mtab{width:100%;border-collapse:collapse;font-size:10px}
+  .mtab th{background:var(--navy);color:#fff;font-weight:700;padding:5px 6px;text-align:right;font-size:8.5px}
+  .mtab th:first-child{text-align:left}
+  .mtab td{padding:4px 6px;text-align:right;border-bottom:1px solid #EEF2F7;color:#334155}
+  .mtab td:first-child{text-align:left;font-weight:600;color:var(--navy)}
+  .mtab .badge{display:inline-block;font-size:8px;font-weight:700;padding:1px 5px;border-radius:8px;background:#EAF2FC;color:var(--blue)}
+  .shot.wide{grid-column:1 / -1}
+  .shot.wide .nw-chart{width:100%;height:150px;display:block}
+  .legal-doc h4{color:var(--navy);font-size:14px;margin:16px 0 4px}
+  .legal-doc p{margin-bottom:8px}
+
+  @media(max-width:880px){
+    .shots{grid-template-columns:1fr}
+    .hero .wrap{grid-template-columns:1fr;gap:34px}
+    .hero h1{font-size:34px}
+    .features{grid-template-columns:1fr}
+    .steps{grid-template-columns:1fr 1fr}
+    .topbar nav{display:none}
+  }
+  @media(max-width:540px){
+    .steps{grid-template-columns:1fr}
+    .hero{padding:46px 0 52px}
+    .sec-title{font-size:25px}
+  }
+  /* Respect reduced motion */
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="wrap">
+    <a href="#top" class="brand" style="gap:11px"><img src="data:image/jpeg;base64,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" alt="" style="height:36px;width:auto;display:block;border-radius:5px"><span style="color:#fff;font-weight:800;font-size:17px;letter-spacing:.2px">My Retirement Tool</span></a>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a href="#pricing" class="buy">Get it — $29.99</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Retirement planning, made clear</div>
+      <h1>Planning your retirement, or already retired? <em>Plan with confidence</em>, adjust as you need, and keep your financial future safe and sound.</h1>
+      <p class="sub">Whether you're years from retiring or already retired, this tool takes your real numbers and projects your financial future year by year. Not penny-perfect — clear enough to make confident decisions.</p>
+      <div class="cta-row">
+        <a href="#pricing" class="btn-primary">Intro price $29.99 →</a>
+        <div class="price-tag">One-time payment · <a href="demo.html" style="color:#86C2FF;font-weight:700">Try the free demo first →</a></div>
+      </div>
+      <div class="trust-line">
+        <span><span class="ck">✓</span> Your data never leaves your computer</span>
+        <span><span class="ck">✓</span> No advisor, no sales calls, no subscriptions to worry about</span>
+        <span><span class="ck">✓</span> Works on any device</span>
+        <span><span class="ck">✓</span> 7-day satisfaction guarantee</span>
+      </div>
+    </div>
+
+    <!-- Signature visual: a calm runway projection echoing the actual tool -->
+    <div class="hero-card" aria-label="Example projection of savings over time">
+      <div class="hc-top">
+        <div class="hc-label">Projected — funded through</div>
+        <div class="hc-label" style="color:var(--blue)">Age 92 ✓</div>
+      </div>
+      <div class="hc-big">$1.84M</div>
+      <div class="hc-sub">▲ on track to last your full plan</div>
+      <svg class="hc-chart" viewBox="0 0 400 128" preserveAspectRatio="none" role="img">
+        <defs>
+          <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2E86DE" stop-opacity="0.22"/>
+            <stop offset="100%" stop-color="#2E86DE" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <!-- rising then gentle drawdown curve -->
+        <path d="M0,96 C70,82 110,40 175,30 C230,22 250,28 285,44 C320,60 360,86 400,104 L400,128 L0,128 Z" fill="url(#fill)"/>
+        <path d="M0,96 C70,82 110,40 175,30 C230,22 250,28 285,44 C320,60 360,86 400,104" fill="none" stroke="#2E86DE" stroke-width="2.5"/>
+        <circle cx="175" cy="30" r="4" fill="#1B2A4A" stroke="#fff" stroke-width="2"/>
+      </svg>
+      <div class="hc-legend">
+        <span><i style="background:#2E86DE"></i>Total savings</span>
+        <span><i style="background:#1B2A4A"></i>Retirement begins</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="wrap">
+    <div class="head-banner">
+      <div class="sec-eyebrow">What it does</div>
+      <h2 class="sec-title">Everything you need to plan with confidence</h2>
+      <p class="sec-intro">Not a savings calculator that asks three questions. A full planning tool that follows your money through every year — whether you're planning the leap or already living in retirement.</p>
+    </div>
+    <div class="features">
+      <div class="fcard">
+        <div class="ico">💵</div>
+        <h3>How much can you spend?</h3>
+        <p>Not sure what your retirement budget should be? Smart Budget works backward from your savings and tells you the most you can safely spend.</p>
+      </div>
+      <div class="fcard">
+        <div class="ico">📊</div>
+        <h3>Will your money last?</h3>
+        <p>A clear runway showing the years you're flush, when accounts wind down, and — if there's a gap — a plain warning telling you the year it starts and how to close it.</p>
+      </div>
+      <div class="fcard">
+        <div class="ico">📆</div>
+        <h3>A living plan — adjusts with you for life</h3>
+        <p>A detailed monthly budget across housing, daily living, transportation, health and more. On the Year-by-Year tab, replace any year's estimates with your actual numbers — real spending, updated balances, a new retirement year — and watch the whole plan reshape instantly. Your plan keeps up with your life.</p>
+      </div>
+      <div class="fcard">
+        <div class="ico">🧾</div>
+        <h3>Your whole net worth</h3>
+        <p>Savings, home, vehicles, and debts in one place — and a Plan Summary that shows how it all changes year by year.</p>
+      </div>
+      <div class="fcard">
+        <div class="ico">🏡</div>
+        <h3>Home equity & downsizing</h3>
+        <p>Model selling your home, renting for a while, then buying again later. See how the proceeds change your whole plan.</p>
+      </div>
+      <div class="fcard">
+        <div class="ico">⚖️</div>
+        <h3>Social Security & RMDs</h3>
+        <p>Time your Social Security, handle required withdrawals at the right age for your birth year, and keep taxes realistic.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEE IT IN ACTION -->
+<section id="see">
+  <div class="wrap">
+    <div class="head-banner">
+      <div class="sec-eyebrow">See it in action</div>
+      <h2 class="sec-title">A look inside the tool</h2>
+      <p class="sec-intro">Clean, clear screens that turn your numbers into a picture you can actually read. Here's a real look inside.</p>
+    </div>
+    <div class="shots">
+
+      <div class="shot wide">
+        <div class="shot-bar"><span class="tab on">My Results</span><span class="tab">My Timeline</span><span class="tab">Plan Summary</span></div>
+        <img src="shots/results.png" alt="My Results tab showing safe spending levels, funded status and net worth over time" loading="lazy">
+        <div class="shot-cap"><b>Your answer at a glance.</b> What you can safely spend each month, whether your money lasts, and how selling or staying put changes the picture.</div>
+      </div>
+
+      <div class="shot wide">
+        <div class="shot-bar"><span class="tab">Net Worth</span><span class="tab on">Smart Budget</span><span class="tab">My Results</span></div>
+        <img src="shots/smartbudget.png" alt="Smart Budget tab showing conservative, moderate and comfortable monthly spending levels" loading="lazy">
+        <div class="shot-cap"><b>Find out what you can safely spend.</b> Smart Budget works backward from your savings and income to three spending levels — then applies the one you pick to your plan in one click.</div>
+      </div>
+
+      <div class="shot wide">
+        <div class="shot-bar"><span class="tab">My Results</span><span class="tab on">My Timeline</span><span class="tab">Year-by-Year</span></div>
+        <img src="shots/timeline.png" alt="My Timeline tab showing the IRA and cash runway with key events" loading="lazy">
+        <div class="shot-cap"><b>See the whole road ahead.</b> Your savings runway year by year, with the moments that matter marked — the home sale, the day you retire, when IRA draws begin.</div>
+      </div>
+
+      <div class="shot wide">
+        <div class="shot-bar"><span class="tab">Plan Summary</span><span class="tab">Year-by-Year</span><span class="tab on">RMDs</span></div>
+        <img src="shots/rmd.png" alt="RMDs tab showing required minimum distributions year by year with tax" loading="lazy">
+        <div class="shot-cap"><b>No surprises at tax time.</b> The withdrawals the IRS will require from age 73 or 75, year by year, with the tax on each one.</div>
+      </div>
+
+    </div>
+  </div>
+  </section>
+
+<!-- HOW IT WORKS -->
+<section class="band" id="how">
+  <div class="wrap">
+    <div class="sec-eyebrow">How it works</div>
+    <h2 class="sec-title">From your numbers to a clear answer</h2>
+    <p class="sec-intro">You give it your real, ballpark figures. It does the rest — most people get their first clear picture in about 10–15 minutes.</p>
+    <div class="steps">
+      <div class="step"><div class="num">Step 1</div><h4>Start with a sample or your own numbers</h4><p>Opens with a realistic sample plan so you can explore right away. Replace it with your own — savings, income, Social Security, your home. Round numbers are fine.</p></div>
+      <div class="step"><div class="num">Step 2</div><h4>Set your spending</h4><p>Your budget now and in retirement — or let Smart Budget find it for you.</p></div>
+      <div class="step"><div class="num">Step 3</div><h4>See the projection</h4><p>Year by year, watch your money grow, then carry you through retirement.</p></div>
+      <div class="step"><div class="num">Step 4</div><h4>Update it with real life</h4><p>Retire earlier, delay Social Security, sell the house — see what actually moves your plan. Then come back and enter your real spending or updated balances year by year to keep the plan live and current.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HONESTY STRIP (the real differentiator) -->
+<section class="honest">
+  <div class="wrap">
+    <blockquote>"It won't flatter you. If there's a gap, you'll see <b>a plain warning at the top of your Dashboard</b> — the exact year it starts, how much you're short, and what to change to close it."</blockquote>
+    <div class="src">That honesty is the whole point. A clear-eyed view you can actually trust, not a rosy guess.</div>
+  </div>
+</section>
+
+<!-- THE FUN PART — creative exploration -->
+<section>
+  <div class="wrap">
+    <div class="head-banner">
+      <div class="sec-eyebrow">Where it gets good</div>
+      <h2 class="sec-title">The real power is in the "what if?"</h2>
+      <p class="sec-intro">Getting your first answer is just the start. The fun begins when you start playing with it.</p>
+    </div>
+    <div class="features">
+      <div class="fcard">
+        <div class="ico">🎛️</div>
+        <h3>Change one thing, see everything move</h3>
+        <p>Retire two years earlier. Spend a little more. Sell the house in 2030 instead of now. Every change updates your whole future instantly — no recalculating, no rebuilding.</p>
+      </div>
+      <div class="fcard">
+        <div class="ico">🧭</div>
+        <h3>Test the decisions that matter</h3>
+        <p>Is it better to take Social Security at 62 or 67? Spend more early or save it for later? Downsize or stay put? Try them side by side and watch which one actually leaves you better off.</p>
+      </div>
+      <div class="fcard">
+        <div class="ico">💡</div>
+        <h3>The more you use it, the more you see</h3>
+        <p>Patterns emerge the more you explore — you start to feel exactly which levers move your plan and which barely matter. That's where guesswork turns into real, confident forecasting.</p>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:15px;color:var(--muted);max-width:620px;margin:28px auto 0">Most tools give you one number and call it done. This one invites you to be curious — to explore freely, picture different futures, and find the plan that actually fits the life you want.</p>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="head-banner">
+      <div class="sec-eyebrow">Pricing</div>
+      <h2 class="sec-title">One price. Everything included.</h2>
+      <p class="sec-intro">Pay once. Yours to keep. The launch price runs through October 31, then it goes to $49.99.</p>
+    </div>
+    <div class="pricing" style="grid-template-columns:1fr;max-width:460px">
+      <div class="pcard pcard-featured">
+        <div class="pname">My Retirement Tool</div>
+        <div class="ptagline">Every tab, every feature — one price.</div>
+        <span class="price-was">Regularly $49.99</span>
+        <div class="pprice">$29.99<span> one-time</span></div>
+        <div style="font-size:12px;font-weight:700;color:#92400E;background:#FEF3C7;border:1px solid #FCD34D;border-radius:20px;padding:4px 12px;display:inline-block;margin-top:8px">Launch offer — ends October 31</div>
+        <div class="pnote">One payment · use on up to 3 of your own devices</div>
+        <ul class="plist">
+          <li>When-can-I-retire & safe-spending tools (Smart Budget)</li>
+          <li>Year-by-year projection to age 100</li>
+          <li>Detailed monthly budget with your real spending</li>
+          <li>Home equity, downsize, and stay-put modeling</li>
+          <li>Social Security timing</li>
+          <li>RMD projections with the tax on each withdrawal</li>
+          <li>Pension, annuity, rental, part-time income</li>
+          <li>Net worth tracking · export to PDF</li>
+          <li>Your data stays private, on your device</li>
+        </ul>
+        <a href="https://myretirementtool.lemonsqueezy.com/checkout/buy/169723ab-eddf-472b-9fe3-5feeab997e4e?checkout[discount_code]=LAUNCH20" class="btn-primary" id="buy-btn">Get It Now — $29.99 →</a>
+        <div class="pguarantee">🛡️ 7-day satisfaction guarantee</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:22px;font-size:13px;color:var(--muted)">Prefer to look first? <a href="demo.html">Open the free demo →</a></div>
+
+    <!-- Cost comparison vs. subscription competitors -->
+    <div style="max-width:640px;margin:44px auto 0">
+      <div style="text-align:center;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px">What you'd pay over 3 years</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:180px;font-size:13px;color:var(--navy);font-weight:700">My Retirement Tool</div>
+          <div style="flex:1;background:#E2E8F0;border-radius:7px;height:30px;position:relative;overflow:hidden">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:16%;background:var(--grn);border-radius:7px"></div>
+            <span style="position:absolute;left:calc(16% + 8px);top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:var(--navy)">$29.99 once</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:180px;font-size:13px;color:var(--muted);font-weight:600">Subscription tools</div>
+          <div style="flex:1;background:#E2E8F0;border-radius:7px;height:30px;position:relative;overflow:hidden">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:100%;background:#CBD5E1;border-radius:7px"></div>
+            <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:#475569">$300–$510</span>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:11.5px;color:#94A3B8;margin-top:12px">Based on competitor subscriptions of roughly $100–$170/year. You pay once and keep the tool — no annual renewal.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="background:var(--surf2);border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-eyebrow">Questions</div>
+    <h2 class="sec-title">Good to know</h2>
+    <div class="faq">
+      <div class="qa"><h4>How hard is it to use? I'm not a numbers person.</h4><p>It's built for regular people, not accountants. You type your figures into plain-language fields — your savings, your income, what you spend — and everything updates on its own. Every page has a "How to use this page" guide, and a quick welcome tour walks you through it the first time. If you can fill out an online form, you can use this.</p></div>
+      <div class="qa"><h4>How much time does it take to get a real answer?</h4><p>About 10–15 minutes for your own picture. When you first open it, a realistic sample plan is already loaded so you can see how it works right away — then you replace those numbers with yours. The projection appears immediately — no waiting, no setup, no account to create. From there you can spend as long as you like trying "what-if" scenarios, or just take your answer and go. You don't need every number to be exact; good ballpark figures give you a reliable picture.</p></div>
+      <div class="qa"><h4>Do I just check it once and I'm done?</h4><p>You can — your first answer is genuinely useful on its own. But the tool really shines when you come back and explore: try retiring earlier, spending more, claiming Social Security later, selling the home later. The more "what-ifs" you run, the clearer it becomes which choices actually shape your future — and that's where it turns from a calculator into a real forecasting tool.</p></div>
+      <div class="qa"><h4>Can I track real spending against my plan over time?</h4><p>Yes — this is one of the tool's most useful features. The Budget tab has a detailed monthly expense breakdown across housing, daily living, transportation, health, and more, with six side-by-side scenarios (current, retirement, necessity, comfortable, luxury, and one spare) so you can compare exactly where every dollar goes. The Year-by-Year tab lets you override any single year with your actual numbers — salary, other income, expenses, cash or IRA balances — as your real life unfolds. Enter last month's actual spending, this quarter's real returns, or your revised retirement year, and watch your whole plan update in real time. It's the difference between a one-shot projection and a plan you actually keep.</p></div>
+      <div class="qa"><h4>Is this financial advice?</h4><p>No. It's a planning tool that shows you projections based on your inputs, using clear assumptions. It's meant to inform your own decisions — it isn't tax or investment advice, and it doesn't replace a professional when you want one.</p></div>
+      <div class="qa"><h4>How accurate is it?</h4><p>It's built to be directional — clear enough to make decisions, not penny-perfect. It uses straightforward assumptions for taxes and returns and is honest about its limits. That clarity is the point.</p></div>
+      <div class="qa"><h4>Where does my data go?</h4><p>Nowhere. Everything you enter stays in your own browser, on your own device. There's no account and no server collecting your finances. You can export a backup file anytime.</p></div>
+      <div class="qa"><h4>Is it a one-time payment or a subscription?</h4><p>One-time. You pay once ($29.99 during the launch offer, $49.99 after) and the tool is yours to keep — no recurring charges, no renewals.</p></div>
+      <div class="qa"><h4>Can I try it before buying?</h4><p>Yes. <a href="demo.html">Open the free demo</a> to explore the tool before you decide.</p></div>
+      <div class="qa"><h4>What if I buy it and run into a problem?</h4><p>Email <a href="mailto:support@myretirementtool.com">support@myretirementtool.com</a> within 7 days and we'll help you get it working — most issues are a quick fix. If we genuinely can't make it right for you, we'll refund you in full.</p></div>
+      <div class="qa"><h4>What if I need help?</h4><p>Email <a href="mailto:support@myretirementtool.com">support@myretirementtool.com</a> and a real person will get back to you.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div>
+      <div class="fbrand">My Retirement Tool</div>
+      <div>Plan with confidence, not guesswork.</div>
+      <div class="foot-links" style="margin-top:12px">
+        <a href="#privacy">Privacy Policy</a>
+        <a href="#terms">Terms of Use</a>
+        <a href="#refunds">Refund Policy</a>
+        <a href="mailto:support@myretirementtool.com">Contact</a>
+      </div>
+      <div class="legal">
+        My Retirement Tool is a planning and educational tool, not a financial, tax, legal, or investment advisor. Projections are illustrative estimates based on the information you enter and simplified assumptions; they are not guarantees of future results. Always consult a qualified professional before making financial decisions.
+      </div>
+    </div>
+    <div style="font-size:12px;color:#6F87A8">© <span id="yr"></span> My Retirement Tool</div>
+  </div>
+
+  <!-- PRIVACY POLICY (linked anchor reveals it) -->
+  <div class="wrap">
+    <div class="legal-doc" id="privacy">
+      <h3>Privacy Policy</h3>
+      <p>Last updated: <span class="upd"></span></p>
+      <p>My Retirement Tool is designed to protect your privacy by keeping your information on your own device.</p>
+      <h4>Information we collect</h4>
+      <p>The planning tool itself stores the figures you enter (savings, income, budget, and similar) locally in your own web browser. This information is not transmitted to us and we do not have access to it. When you make a purchase, payment is processed by our payment provider, who collects the billing details needed to complete your order; we receive only the information necessary to deliver and support your license.</p>
+      <h4>How we use information</h4>
+      <p>We use purchase and contact information only to deliver your license, provide support, and send essential account or update notices. We do not sell your personal information.</p>
+      <h4>Cookies and analytics</h4>
+      <p>Our website may use basic, privacy-respecting analytics to understand general traffic. The planning tool does not require an account and does not track your financial inputs.</p>
+      <h4>Contact</h4>
+      <p>Questions about privacy? Email support@myretirementtool.com.</p>
+    </div>
+
+    <!-- TERMS OF USE -->
+    <div class="legal-doc" id="terms">
+      <h3>Terms of Use</h3>
+      <p>Last updated: <span class="upd"></span></p>
+      <h4>The tool is for planning and education only</h4>
+      <p>My Retirement Tool provides illustrative financial projections based on the information you enter and on simplified assumptions. It is not financial, tax, legal, or investment advice, and it does not guarantee any outcome. You are responsible for the decisions you make, and you should consult a qualified professional before acting on any results.</p>
+      <h4>License</h4>
+      <p>Your purchase grants you a personal license to use the tool on up to three of your own devices. You may not resell, redistribute, or share the tool or your license key. Misuse may result in your license being deactivated.</p>
+      <h4>One-time purchase</h4>
+      <p>Access is provided as a one-time purchase. There is no recurring charge. Updates are provided at our discretion for the supported version.</p>
+      <h4>Satisfaction guarantee</h4>
+      <p>We stand behind the tool with a 7-day satisfaction guarantee. If you experience a problem, contact support@myretirementtool.com within 7 days of purchase and we will work to resolve it. If we are unable to resolve the issue to your satisfaction, we will issue a full refund.</p>
+      <h4>No warranty</h4>
+      <p>The tool is provided "as is," without warranties of any kind. To the fullest extent permitted by law, we are not liable for any decision made or action taken based on the tool's output.</p>
+      <h4>Contact</h4>
+      <p>Questions? Email support@myretirementtool.com.</p>
+    </div>
+
+    <!-- REFUND POLICY -->
+    <div class="legal-doc" id="refunds">
+      <h3>Refund Policy</h3>
+      <p>Last updated: <span class="upd"></span></p>
+      <h4>7-day satisfaction guarantee</h4>
+      <p>My Retirement Tool is backed by a 7-day satisfaction guarantee. If you experience a problem with the tool, please contact us at support@myretirementtool.com within 7 days of your purchase and describe the issue. We will work with you to resolve it — most issues are quickly fixable.</p>
+      <h4>How refunds work</h4>
+      <p>If we are unable to resolve your issue to your satisfaction, we will issue a full refund of your purchase price. To request support or a refund, email support@myretirementtool.com from the address used at purchase, with your order or receipt details. Approved refunds are returned to your original payment method.</p>
+      <h4>Eligibility window</h4>
+      <p>Refund requests must be made within 7 days of the original purchase date. After 7 days, purchases are generally non-refundable, though we will always try to help with any problem you encounter.</p>
+      <h4>Contact</h4>
+      <p>All support and refund requests: support@myretirementtool.com.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent=new Date().getFullYear();
+  const upd=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  document.querySelectorAll('.upd').forEach(e=>e.textContent=upd);
+</script>
+</body>
+</html>
